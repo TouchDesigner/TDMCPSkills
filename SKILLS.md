@@ -29,12 +29,13 @@ Each skill is a directory containing:
 - **`td-node-layout`** — Network layout conventions: spacing, flow, positioning
 - **`td-performance-check`** — Selective cooking, GPU vs CPU, time patterns
 
-### Workflow Skills (4)
+### Workflow Skills (5)
 
 - **`td-build-planning`** — Before building: scout network, plan phases, allocate positions
 - **`td-review-network`** — After building: validate errors, wiring, parameter correctness
 - **`td-network-cleanup`** — After review: layout polish, annotations, alignment, spacing
 - **`td-learn`** — Meta: analyze session tool usage, audit skills for consistency
+- **`td-skills-local`** — Install, update, or remove skills in the current project
 
 ## Build Order
 
