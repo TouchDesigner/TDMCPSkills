@@ -12,7 +12,7 @@ Materials control how geometry appears when rendered by a renderTOP.
 - **phongMAT** — classic diffuse+specular lighting. Maps for diffuse, specular, normal, bump, emit
 - **pbrMAT** — physically based rendering. Metallic/roughness workflow, environment maps. Requires environmentlightCOMP with map TOP (see PBR Setup below)
 - **pointspriteMAT** — renders points as camera-facing quads with configurable size. Essential for particle rendering
-- **glslMAT** — custom GLSL vertex/pixel shaders. Full control. Load `glsl-shaders` skill for shader code
+- **glslMAT** — custom GLSL vertex/pixel shaders. Full control. Load `td-glsl-shaders` skill for shader code
 - **wirePOP** — wireframe rendering via material wireframe toggle
 
 ## When to Use What
@@ -61,7 +61,7 @@ pbrMAT renders completely black without an environment light:
 
 **From pbrMAT/phongMAT** — pulse `outputshader` on the existing material. This creates a glslMAT with all built-in uniforms and shader code pre-populated in separate vertex/pixel DATs. Better starting point when extending PBR-style materials — modify the generated shaders instead of writing from scratch.
 
-Layout follows the GLSL DAT sandwich pattern (see `node-layout` skill). Load `glsl-shaders` skill for shader code, uniforms, and templates.
+Layout follows the GLSL DAT sandwich pattern (see `td-node-layout` skill). Load `td-glsl-shaders` skill for shader code, uniforms, and templates.
 
 ## Pitfalls
 
@@ -71,5 +71,5 @@ Layout follows the GLSL DAT sandwich pattern (see `node-layout` skill). Load `gl
 - **pbrMAT renders black** — missing environmentlightCOMP with an environment map TOP. Always include one
 - **PBR on POPs missing tangents** — normalPOP `tang` must be `alwayscompute`, otherwise lighting fails
 - **pbrMAT `metallic` defaults to 1** — must explicitly set `metallic=0` for non-metallic surfaces, otherwise geometry looks like chrome
-- **pbrMAT reads vertex Tex, not point Tex** — glslPOP writes point attributes, but pbrMAT samples `basecolormap` from vertex Tex coords. Use `attributeconvertPOP` (`convertop=pointtovert`) to convert. See `pop-family` skill
+- **pbrMAT reads vertex Tex, not point Tex** — glslPOP writes point attributes, but pbrMAT samples `basecolormap` from vertex Tex coords. Use `attributeconvertPOP` (`convertop=pointtovert`) to convert. See `td-pop-family` skill
 - **glslMAT on POPs: `Cd`/`N` silent failure** — referencing `Cd` or `N` as vertex attributes silently kills rendering (geometry vanishes, no errors). Use `TDPointColor()` for vertex color, derive normals via `dFdx/dFdy(worldPos)` in fragment shader

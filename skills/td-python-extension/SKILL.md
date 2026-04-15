@@ -4,7 +4,7 @@ description: Python extensions — ext0object, extension classes, parameter call
 
 # Python Extensions
 
-Patterns for Python extension components in TouchDesigner. Complements `comp-architecture` (structure/custom pars) and `dat-family` (callback mechanics). See `reference.md` for API signatures and `examples.md` for complete patterns.
+Patterns for Python extension components in TouchDesigner. Complements `td-comp-architecture` (structure/custom pars) and `td-dat-family` (callback mechanics). See `reference.md` for API signatures and `examples.md` for complete patterns.
 
 ## Extension Wiring
 

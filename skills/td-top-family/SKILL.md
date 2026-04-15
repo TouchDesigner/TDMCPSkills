@@ -26,7 +26,7 @@ Image processing, compositing, render pipelines, and feedback loops using Textur
 - `hsvTOP` — HSV adjust
 - `lookupTOP` — color lookup
 - `resolveTOP` — resolve MSAA
-- `glslmultiTOP` — custom GPU processing (see glsl-shaders skill)
+- `glslmultiTOP` — custom GPU processing (see td-glsl-shaders skill)
 
 ## Output Convention
 

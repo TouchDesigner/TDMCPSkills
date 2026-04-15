@@ -10,7 +10,7 @@ Custom GPU shaders in TouchDesigner. Three contexts: TOP (image processing), MAT
 
 - `glslmultiTOP` (prefer over glslTOP) — image processing, procedural textures, compute. Supports >3 inputs and POP buffer reads
 - `glslMAT` — custom materials with vertex + pixel shaders, TD lighting system
-- `glslPOP` / `glsladvancedPOP` — per-point GPU compute on particle data (see pop-family skill). Compute shader API (`P[idx]`, `TDIn_P()`, `N[idx]`) documented in pop-family `reference.md`. For `glsladvancedPOP` (multi-class, index buffer, extra outputs), see `glsladvancedPOP.md`. Custom attributes via attr sequence — buffer name is `Color` (capital C), auto-declared (see pop-family skill)
+- `glslPOP` / `glsladvancedPOP` — per-point GPU compute on particle data (see td-pop-family skill). Compute shader API (`P[idx]`, `TDIn_P()`, `N[idx]`) documented in td-pop-family `reference.md`. For `glsladvancedPOP` (multi-class, index buffer, extra outputs), see `glsladvancedPOP.md`. Custom attributes via attr sequence — buffer name is `Color` (capital C), auto-declared (see td-pop-family skill)
 
 ## Naming Conventions
 
@@ -30,7 +30,7 @@ Creating a glslmultiTOP auto-creates docked DATs: `<name>_pixel`, `<name>_comput
 
 **glslPOP/glslcopyPOP**: always write shaders into the auto-docked DATs (`<name>_compute`, `<name>_ptCompute`). Never create separate textDATs for POP shaders. Delete unused docked DATs (e.g. `_vertCompute`, `_primCompute` if not writing vert/prim shaders).
 
-**glslMAT**: See `mat-family` skill for docked DAT setup and placement. Use `#ifdef TD_VERTEX_SHADER` / `#ifdef TD_PIXEL_SHADER` guards in combined shader DAT. See `reference.md` for MAT vertex/pixel functions and templates.
+**glslMAT**: See `td-mat-family` skill for docked DAT setup and placement. Use `#ifdef TD_VERTEX_SHADER` / `#ifdef TD_PIXEL_SHADER` guards in combined shader DAT. See `reference.md` for MAT vertex/pixel functions and templates.
 
 ## Uniforms
 
@@ -72,7 +72,7 @@ GLSL shader DATs should be synced to disk following the project file convention:
 - Example: `/project1/MyEffect/glsl_raymarch_pixel` → `src/glsl/MyEffect/glsl_raymarch_pixel.glsl`
 - Set `file` parameter to the relative path, `syncfile=true`, `language=glsl`
 
-See the `dat-family` skill for full sync details.
+See the `td-dat-family` skill for full sync details.
 
 ## Pitfalls
 

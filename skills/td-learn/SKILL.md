@@ -18,7 +18,7 @@ Analyzes how tools were used during the session and audits the skill system. Com
 
 ### 1. Analyze Session Logs
 
-Run the analyzer: `python skills/learn/scripts/analyzer.py`
+Run the analyzer: `python skills/td-learn/scripts/analyzer.py`
 
 The analyzer reads the current session's JSONL log from `.claude/analytics/sessions/` and reports:
 - **Tool call frequency** — which tools were called and how often
@@ -72,7 +72,7 @@ For every skill that was loaded or should have been loaded:
 - **Redundancy** — does it duplicate content from another skill?
 - **Completeness** — was something missing that caused a problem?
 - **Efficiency** — could it be shorter without losing information?
-- **Hierarchy** — does it reference cross-cutting skills (node-layout, etc.) instead of inlining their rules?
+- **Hierarchy** — does it reference cross-cutting skills (td-node-layout, etc.) instead of inlining their rules?
 
 ### 6. Check Hierarchy
 
@@ -80,9 +80,9 @@ The skill system is layered: `CLAUDE.md` (always loaded) → `SKILLS.md` (loaded
 
 Rules for where information lives:
 - **CLAUDE.md** — only workflow steps and guardrails. No domain knowledge
-- **Cross-cutting skills** (node-layout, performance-check) — conventions shared across builders. Each builder references these, never duplicates them
+- **Cross-cutting skills** (td-node-layout, td-performance-check) — conventions shared across builders. Each builder references these, never duplicates them
 - **Builder skills** — domain-specific knowledge. Reference cross-cutting skills, don't inline them
-- **Workflow skills** — phase-specific process (build-planning, review-network, network-cleanup, learn)
+- **Workflow skills** — phase-specific process (td-build-planning, td-review-network, td-network-cleanup, td-learn)
 
 ### 7. Propose Changes
 
@@ -137,7 +137,7 @@ Run across **all** skills (not just touched ones):
 
 ### 12. Report Stats
 
-End every run with: `python skills/learn/scripts/skill_stats.py`
+End every run with: `python skills/td-learn/scripts/skill_stats.py`
 
 Reports lines and estimated tokens per skill, sorted by token count. Flags skills over the ~80 line / ~4,000 token budget.
 

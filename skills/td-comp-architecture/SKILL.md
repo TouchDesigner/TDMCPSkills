@@ -43,7 +43,7 @@ Expose computed state as readonly custom pars with expressions to extension `@pr
 
 ## Extensions
 
-For Python-driven components, see the `python-extension` skill. Use `get_operator_info(path, include_extensions=true)` to inspect existing COMPs — returns extension classes, promoted method signatures, clone sources, and config COMP contents.
+For Python-driven components, see the `td-python-extension` skill. Use `get_operator_info(path, include_extensions=true)` to inspect existing COMPs — returns extension classes, promoted method signatures, clone sources, and config COMP contents.
 
 ## Network Size
 
@@ -72,7 +72,7 @@ When two sub-COMPs have identical networks but different parameter values (e.g. 
 - Delete auto-created torus immediately after creating
 - Output nullPOP needs `display=true render=true`
 - Material pattern: `materialMAT → null_material`, reference as `./null_material`
-- For instancing: see `geometry-instancing` skill
+- For instancing: see `td-geometry-instancing` skill
 
 ## Pitfalls
 

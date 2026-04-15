@@ -26,7 +26,7 @@ For each operator to create, decide:
 - **Type** — opType name (e.g. `noiseTOP`, `blurTOP`, `lfoCHOP`)
 - **Name** — follow naming guardrails in CLAUDE.md
 - **Family** — determines which builder skill to consult
-- **Position** — X,Y following the `node-layout` skill conventions
+- **Position** — X,Y following the `td-node-layout` skill conventions
 - **Parameters** — use `get_help` tool for correct par names
 - **Connections** — what wires into what, which input index
 
@@ -36,11 +36,11 @@ For each operator to create, decide:
 - **Cross-family** → expression: `op('chop')['chan']`, `op('table')['row','col']`
 - **Cross-COMP** → select operators or parent shortcuts
 - **Into/out of COMP** → in*/out* operators
-- **State** → readonly custom pars with extension expressions (see comp-architecture)
+- **State** → readonly custom pars with extension expressions (see td-comp-architecture)
 
 ### 3. Allocate positions
 
-Follow `node-layout` skill conventions. Start from the insertion point (rightmost existing X + 175, or 0 if empty). Use 210px Y offset between parallel chains to leave room for annotation headers during network-cleanup.
+Follow `td-node-layout` skill conventions. Start from the insertion point (rightmost existing X + 175, or 0 if empty). Use 210px Y offset between parallel chains to leave room for annotation headers during td-network-cleanup.
 
 Track a position map as you go: `{op_name: [x, y]}`. Update it after each build step.
 

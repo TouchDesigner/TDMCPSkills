@@ -22,8 +22,8 @@ GPU-accelerated point operations. POPs replace SOPs for 3D geometry with massive
 2. **Delete auto-created torus** immediately
 3. Build POP chain inside, end with nullPOP
 4. Set `display=true render=true` on output nullPOP
-5. Material: place MAT inside geometryCOMP, reference as `./mat_name`. See `mat-family` skill
-6. For instancing: see `geometry-instancing` skill
+5. Material: place MAT inside geometryCOMP, reference as `./mat_name`. See `td-mat-family` skill
+6. For instancing: see `td-geometry-instancing` skill
 
 ## Feedback Simulation
 
@@ -37,14 +37,14 @@ feedbackPOP has 1 input (reset/initial geometry). Loop back from output null is 
 ## GLSL POP
 
 - `glslPOP` — default choice, one attribute class, supports multi-pass
-- `glsladvancedPOP` — only when needed: multi-class read/write, index buffer (`I[]`), extra outputs. See `glsl-shaders/glsladvancedPOP.md` for buffer allocation, output count control, and pitfalls
+- `glsladvancedPOP` — only when needed: multi-class read/write, index buffer (`I[]`), extra outputs. See `td-glsl-shaders/glsladvancedPOP.md` for buffer allocation, output count control, and pitfalls
 - Set `computedat` to textDAT name, list output attributes in `outputattrs`
 - **Custom attributes** — use the `attr` sequence: `attr0name=color`, `attr0type=color`. GLSL buffer is auto-declared as `Color` (capital C, matching POP attribute name). Write as `Color[idx] = vec4(...)`. Do NOT manually declare an SSBO — it compiles but writes to an unmapped buffer
 - **Attribute must exist before writing** — `outputattrs` only grants write access to attributes that already exist on the points. To write a new attribute: either create it with the `attr` sequence on the glslPOP itself, or place an `attributePOP` upstream to initialize it. Then list it in `outputattrs` explicitly
 - **writeonly caveat** — with default `outputaccess=writeonly`, attributes listed in `outputattrs` that aren't written in the shader may get zeroed
 - `TDPerlinNoise()` NOT available — write custom noise or use sampler input
 - Multi-pass: `Passes=N, prevPassOutput=ON` for iterative solvers
-- **`vec` not `const` for uniforms** — `const` sequence recompiles shader on every value change. Use `vec` for runtime parameters (see `glsl-shaders` skill)
+- **`vec` not `const` for uniforms** — `const` sequence recompiles shader on every value change. Use `vec` for runtime parameters (see `td-glsl-shaders` skill)
 - **Prefer built-in POPs over trivial glslPOP** — operations like texture lookup + math (abs, multiply, add) can use `lookuptexturePOP → mathmixPOP` chain instead of custom GLSL
 
 ## Common Patterns
@@ -71,7 +71,7 @@ feedbackPOP has 1 input (reset/initial geometry). Loop back from output null is 
 
 ## Pitfalls
 
-- **Locked nullPOP breaks POP cook loops** — cachePOPs keep cooking even when `active=false`, creating dependency loops in iterative POP pipelines. Place a `nullPOP` after the cachePOP and lock it (`op.lock = True`). The locked null holds stable geometry and breaks the cook chain. See `glsl-shaders/glsladvancedPOP.md` for the full cache feedback pattern
+- **Locked nullPOP breaks POP cook loops** — cachePOPs keep cooking even when `active=false`, creating dependency loops in iterative POP pipelines. Place a `nullPOP` after the cachePOP and lock it (`op.lock = True`). The locked null holds stable geometry and breaks the cook chain. See `td-glsl-shaders/glsladvancedPOP.md` for the full cache feedback pattern
 - **Default torus not deleted** — renders instead of your chain
 - **No display/render flags on output null** — nothing renders
 - **feedbackPOP not reinitialized after attribute changes** — stale attribute schema

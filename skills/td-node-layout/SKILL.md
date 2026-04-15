@@ -4,7 +4,7 @@ description: Network layout conventions — spacing, flow direction, positioning
 
 # Layout Conventions
 
-Standard positioning rules for TouchDesigner networks. Loaded by build-planning and network-cleanup skills.
+Standard positioning rules for TouchDesigner networks. Loaded by td-build-planning and td-network-cleanup skills.
 
 ## Core Spacing
 

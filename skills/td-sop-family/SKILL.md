@@ -4,7 +4,7 @@ description: SOP geometry — procedural modeling, CPU-based geometry operations
 
 # SOP Networks
 
-CPU-based geometry operators. SOPs are the traditional geometry family — procedural modeling, deformation, boolean operations. For GPU-accelerated point work, prefer POPs (see pop-family skill).
+CPU-based geometry operators. SOPs are the traditional geometry family — procedural modeling, deformation, boolean operations. For GPU-accelerated point work, prefer POPs (see td-pop-family skill).
 
 ## When to Use SOPs vs POPs
 

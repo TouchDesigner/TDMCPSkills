@@ -8,7 +8,7 @@ Organize operator networks into clean, readable layouts. Only moves, resizes, co
 
 ## Process
 
-0. **Load `node-layout` skill** — required for spacing, padding formulas, and containment checks. Do not skip this step
+0. **Load `td-node-layout` skill** — required for spacing, padding formulas, and containment checks. Do not skip this step
 1. **Survey** — `list_operators(path, depth=2)` for positions, sizes, overlaps, and existing annotations. Use `get_connections(path, graph=true)` for full signal flow topology in execution order
 2. **Delete old annotations** — destroy any existing `annotateCOMP` ops before reorganizing
 3. **Plan layout** — identify functional groups, chains, parallel branches. Independent groups go **side-by-side** when they have similar vertical extent (saves space vs stacking). Use actual `nodeWidth`/`nodeHeight` to compute bounding boxes. Replace long cross-network wires with selectCHOP `chop` parameter references — especially for merge inputs and fan-out patterns
@@ -30,7 +30,7 @@ Organize operator networks into clean, readable layouts. Only moves, resizes, co
 
 ## Annotation Rules
 
-Follow `node-layout` skill for spacing, alignment, and sizing formulas. Additional cleanup-specific rules:
+Follow `td-node-layout` skill for spacing, alignment, and sizing formulas. Additional cleanup-specific rules:
 
 - Use `annotation` tool with `parent_path`, `comment`, `nodeX`, `nodeY`, `width`, `height`, `color` (RGB array 0-1)
 - Compute bounds from actual `nodeWidth`/`nodeHeight` — never guess
@@ -45,7 +45,7 @@ Do **not** color operators by family — that's already visually obvious from op
 
 ## Layout Reference
 
-Load the `node-layout` skill for full positioning rules (spacing, flow direction, special patterns, annotation layout). Follow naming guardrails in CLAUDE.md when verifying operator names.
+Load the `td-node-layout` skill for full positioning rules (spacing, flow direction, special patterns, annotation layout). Follow naming guardrails in CLAUDE.md when verifying operator names.
 
 ## Pitfalls
 
