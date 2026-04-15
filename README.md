@@ -22,13 +22,9 @@ Download the latest release zip, extract it, and run:
 python install.py install
 ```
 
-When no local repo is detected, the installer can also fetch directly from GitHub:
+When no local repo is detected, the installer can also fetch directly from GitHub.
 
-```bash
-python install.py install
-```
-
-## Project-Local Skills
+## Project-Local Skills (`/td-skills-local`)
 
 Once installed globally from a git clone, you can install skills into any project directly from Claude Code:
 
@@ -43,6 +39,49 @@ You can also do it manually:
 ```bash
 python install.py install --project /path/to/your/td-project
 ```
+
+To remove local skills and revert to the global set:
+
+```bash
+python install.py uninstall --project .
+```
+
+## Customizing Skills (fork workflow)
+
+You can fork the repo and create your own branch to customize skills for your workflow:
+
+```bash
+git clone https://github.com/YOUR_USERNAME/TDMCPSkills.git
+cd TDMCPSkills
+git checkout -b my-custom-skills
+```
+
+Edit any skill under `skills/`, then install globally:
+
+```bash
+python install.py install
+```
+
+To stay up to date with the standard skills while keeping your customizations:
+
+```bash
+git fetch upstream
+git merge upstream/main
+python install.py install
+```
+
+Use `/td-skills-local` to push your updated skills into individual projects as you go.
+
+## Improving Skills with `/td-learn`
+
+The `td-learn` skill helps you improve the skill system based on real usage. After a build session, run `/td-learn` in Claude Code. It will:
+
+- Analyze tool usage patterns from the session (which tools were called, how often, in what order)
+- Flag inefficiencies like repeated calls, high-token responses, or `execute_code` where dedicated tools exist
+- Audit loaded skills for missing knowledge, contradictions, or redundancy
+- Propose specific edits to skill files
+
+This is how you create and refine your own skills. If you notice Claude struggling with a particular pattern, `/td-learn` identifies the gap and suggests what to add. Commit your improvements to your branch and reinstall.
 
 ## Update
 
@@ -64,14 +103,14 @@ python install.py uninstall
 Or for a project-local install:
 
 ```bash
-python install.py uninstall --project /path/to/your/td-project
+python install.py uninstall --project .
 ```
 
 ## Check Status
 
 ```bash
 python install.py status
-python install.py status --project /path/to/your/td-project
+python install.py status --project .
 ```
 
 Shows installed version, source, skill count, and checks for available updates.
