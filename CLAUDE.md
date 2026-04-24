@@ -5,23 +5,17 @@ Skills for the TouchDesigner MCP server. Each skill teaches Claude how to work w
 ## Structure
 
 - `skills/` — skill directories (all prefixed `td-`), each with `SKILL.md` + optional `reference.md`, `examples.md`
-- `hooks/` — Claude Code hooks (tool-logger for session analytics)
 - `install.py` — cross-platform installer (install, uninstall, status)
 - `SKILLS.md` — master index of all skills
 
-## Developing Skills
+## Workflow
 
-1. Create a directory under `skills/` with `td-` prefix and at least a `SKILL.md`
-2. Add `reference.md` and/or `examples.md` if the skill has enough material
-3. Use YAML frontmatter with `description` and `user_invocable` fields in `SKILL.md`
-4. Update `SKILLS.md` index
-5. To test: `python install.py install --project <td-project-path>`
-
-## Learn Workflow
-
-After build sessions, run `/td-learn` to analyze tool usage patterns:
-- `python skills/td-learn/scripts/analyzer.py` — session log analysis
-- `python skills/td-learn/scripts/skill_stats.py` — skill size/token audit
+1. **Scout** — `project_info`, find the right comp/path
+2. **Plan** — load `td-build-planning` skill, decide operators, positions, builder skills
+3. **Build** — execute using builder skills (td-top-family, td-chop-family, td-glsl-shaders, etc.)
+4. **Review** — load `td-review-network` skill, check errors, verify wiring
+5. **Cleanup** — always run `td-network-cleanup` skill after builds, align layout, annotate
+6. **Learn** — run `/td-learn` to analyze session tool usage and update skills
 
 ## Guidelines
 

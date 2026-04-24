@@ -76,9 +76,9 @@ Use `/td-skills-local` to push your updated skills into individual projects as y
 
 The `td-learn` skill helps you improve the skill system based on real usage. After a build session, run `/td-learn` in Claude Code. It will:
 
-- Analyze tool usage patterns from the session (which tools were called, how often, in what order)
-- Flag inefficiencies like repeated calls, high-token responses, or `execute_code` where dedicated tools exist
+- Review the conversation for struggles, stalls, and points where instructions led to wrong outcomes
 - Audit loaded skills for missing knowledge, contradictions, or redundancy
+- Run a size/token audit across all skills to flag bloat
 - Propose specific edits to skill files
 
 This is how you create and refine your own skills. If you notice Claude struggling with a particular pattern, `/td-learn` identifies the gap and suggests what to add. Commit your improvements to your branch and reinstall.

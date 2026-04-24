@@ -12,17 +12,19 @@ Each skill is a directory containing:
 
 ## Available Skills
 
-### Builder Skills (9)
+### Builder Skills (11)
 
 - **`td-top-family`** — TOP chains, render pipelines, compositing, feedback loops
 - **`td-chop-family`** — CHOP chains, audio, LFOs, animation, data-driven control
 - **`td-pop-family`** — POP networks, particles, geometryCOMP lifecycle, forces, instancing
 - **`td-sop-family`** — SOP geometry, modeling, procedural surfaces
+- **`td-mat-family`** — Materials: constantMAT, pbrMAT, pointspriteMAT, glslMAT, placement, blending
 - **`td-glsl-shaders`** — GLSL pixel, compute, vertex shaders, uniforms
 - **`td-dat-family`** — Python callbacks, table DATs, text processing
 - **`td-lister-ui`** — Lister/TreeLister, tables, interactive lists, data browsers
 - **`td-comp-architecture`** — Extensions, custom pars, modularity
 - **`td-python-extension`** — Extension classes, ext0object, parameter callbacks, scriptTOP/numpy
+- **`td-geometry-instancing`** — geometryCOMP instance setup, data sources (CHOP/DAT/TOP/POP), transforms, textures
 
 ### Cross-Cutting Skills (2)
 
@@ -34,7 +36,7 @@ Each skill is a directory containing:
 - **`td-build-planning`** — Before building: scout network, plan phases, allocate positions
 - **`td-review-network`** — After building: validate errors, wiring, parameter correctness
 - **`td-network-cleanup`** — After review: layout polish, annotations, alignment, spacing
-- **`td-learn`** — Meta: analyze session tool usage, audit skills for consistency
+- **`td-learn`** — Meta: review the conversation and audit skills for consistency
 - **`td-skills-local`** — Install, update, or remove skills in the current project
 
 ## Build Order
