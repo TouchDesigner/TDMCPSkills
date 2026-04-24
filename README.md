@@ -121,6 +121,11 @@ Shows installed version, source, skill count, and checks for available updates.
 - [Claude Code](https://claude.ai/code) (CLI or Desktop App)
 - [TDMCP](https://github.com/TouchDesigner/TDMCP) server running in TouchDesigner
 
+## Contributors
+
+- Jarrett Smith (Derivative)
+- Tim Gerritsen (y=f(x) Lab)
+
 ## Skills Included
 
 See [SKILLS.md](SKILLS.md) for the full list of 18 skills covering TOPs, CHOPs, POPs, SOPs, GLSL, materials, components, UI, and workflow.
