@@ -16,6 +16,7 @@ Standard positioning rules for TouchDesigner networks. Loaded by td-build-planni
 
 ## Positioning Patterns
 
+- **Prefer a single Y=0 row** when all ops fit horizontally. Add a second row only for true branches (parallel paths, secondary-input feeders). Feeder chains that merge into the main chain sit on Y=0 to the left of the merge, not on a separate row
 - **No wires through operators** — stagger multi-input sources vertically
 - **Multi-input nodes** — all sources left of target; input 0 = highest Y; target at Y centroid
 - **Fan-in stacking** — when multiple operators feed one target (e.g. 3 constants → joinCHOP), stack sources vertically at the same X, target to the right. Never spread inputs horizontally at the same Y

@@ -12,13 +12,14 @@ Cross-cutting rules for every TouchDesigner task. Family-specific knowledge live
 2. **Plan** — load `td-build-planning` before any multi-operator build
 3. **Build** — load the relevant builder skill (`td-top-family`, `td-chop-family`, `td-pop-family`, `td-sop-family`, `td-mat-family`, `td-dat-family`, `td-glsl-shaders`, `td-comp-architecture`, `td-python-extension`, `td-geometry-instancing`, `td-lister-ui`) before creating any operator — even single ops
 4. **Review** — load `td-review-network`, check errors and wiring
-5. **Cleanup** — load `td-network-cleanup` (pulls `td-node-layout`) for alignment and annotations
+5. **Cleanup** *(required)* — load `td-network-cleanup` before reporting any multi-op build complete
 6. **Learn** — `/td-learn` to update skills from observed gaps
 
 ## Skill Loading Discipline
 
 - Load the builder skill **before** creating any op, not after
-- Load `td-node-layout` during planning and cleanup
+- Load `td-node-layout` **before placing any op**, not at cleanup
+- Run `td-network-cleanup` at end-of-build — don't report "done" before it
 - Load `td-performance-check` when cooking cost matters
 - Multi-family builds — load each family skill as the scope widens
 

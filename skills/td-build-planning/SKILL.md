@@ -40,7 +40,7 @@ For each operator to create, decide:
 
 ### 3. Allocate positions
 
-Follow `td-node-layout` skill conventions. Start from the insertion point (rightmost existing X + 175, or 0 if empty). Use 210px Y offset between parallel chains to leave room for annotation headers during td-network-cleanup.
+Load `td-node-layout` skill before placing any op. Start from the insertion point (rightmost existing X + 175, or 0 if empty). Use 210px Y offset between parallel chains to leave room for annotation headers during td-network-cleanup.
 
 Track a position map as you go: `{op_name: [x, y]}`. Update it after each build step.
 
