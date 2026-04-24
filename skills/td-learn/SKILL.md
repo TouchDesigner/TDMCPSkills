@@ -46,7 +46,7 @@ Walk back through the current conversation:
 For every skill that was loaded or should have been loaded:
 
 - **Read the SKILL.md** in full
-- **Consistency** — does it contradict CLAUDE.md, other skills, or itself?
+- **Consistency** — does it contradict `td-general`, other skills, or itself?
 - **Redundancy** — does it duplicate content from another skill?
 - **Completeness** — was something missing that caused a problem?
 - **Efficiency** — could it be shorter without losing information?
@@ -54,10 +54,10 @@ For every skill that was loaded or should have been loaded:
 
 ### 5. Check Hierarchy
 
-The skill system is layered: `CLAUDE.md` (always loaded) → `SKILLS.md` (loaded before builds) → individual skills (loaded per task).
+The skill system is layered: `td-general` (always loaded for TD work) → builder/workflow skills (loaded per task) → `references/` files (loaded on demand).
 
 Rules for where information lives:
-- **CLAUDE.md** — only workflow steps and guardrails. No domain knowledge
+- **td-general** — workflow phases and universal guardrails (naming, paths, tool preferences, cross-cutting pitfalls). No family-specific detail
 - **Cross-cutting skills** (td-node-layout, td-performance-check) — conventions shared across builders. Each builder references these, never duplicates them
 - **Builder skills** — domain-specific knowledge. Reference cross-cutting skills, don't inline them
 - **Workflow skills** — phase-specific process (td-build-planning, td-review-network, td-network-cleanup, td-learn)
@@ -78,14 +78,14 @@ Present proposals to the user before making changes.
 After user approval:
 - Edit the affected SKILL.md files
 - Update SKILLS.md index if skills were added/removed/recategorized
-- Update CLAUDE.md only if workflow or guardrails changed
+- Update `td-general` only if workflow or guardrails changed
 
 ### 8. Audit Memory for Skill-Worthy Knowledge
 
 Scan memory files (MEMORY.md index) for TD-specific knowledge that should live in skills instead. Memory is personal context — TD knowledge belongs in skills.
 
 - **TD patterns/conventions** in memory → move to the appropriate skill
-- **Tool behavior** (parameter names, gotchas) → move to relevant skill or CLAUDE.md
+- **Tool behavior** (parameter names, gotchas) → move to relevant skill or `td-general`
 - **User preferences** (workflow style, feedback) → keep in memory
 - **Project context** (deadlines, team info) → keep in memory
 
@@ -102,7 +102,7 @@ Run across **all** skills (not just touched ones):
 - **Bullet lists only** — parameter lists, patterns, pitfalls all as `- **name** — description`
 - **"Would the agent get this wrong?"** — if no, cut it
 - **Flag bloat** — if a skill exceeds ~80 lines or ~4,000 tokens, check for content that can be shortened or moved to `references/`
-- **Check CLAUDE.md** — same rules apply, keep it tight
+- **Check `td-general`** — same rules apply, keep it tight
 
 ### 10. Best Practices Audit
 

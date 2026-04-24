@@ -45,7 +45,7 @@ Do **not** color operators by family — that's already visually obvious from op
 
 ## Layout Reference
 
-Load the `td-node-layout` skill for full positioning rules (spacing, flow direction, special patterns, annotation layout). Follow naming guardrails in CLAUDE.md when verifying operator names.
+Load the `td-node-layout` skill for full positioning rules (spacing, flow direction, special patterns, annotation layout). Follow naming in `td-general` when verifying operator names.
 
 ## Pitfalls
 

@@ -1,0 +1,75 @@
+---
+description: Core TouchDesigner conventions — workflow phases, naming, paths, tool preferences, universal pitfalls. Load before any TouchDesigner build, edit, or review.
+---
+
+# TouchDesigner General Conventions
+
+Cross-cutting rules for every TouchDesigner task. Family-specific knowledge lives in builder skills; this skill tells Claude which to load and what applies everywhere.
+
+## Workflow
+
+1. **Scout** — `project_info` first, then `list_operators`, `get_connections`, `get_errors`
+2. **Plan** — load `td-build-planning` before any multi-operator build
+3. **Build** — load the relevant builder skill (`td-top-family`, `td-chop-family`, `td-pop-family`, `td-sop-family`, `td-mat-family`, `td-dat-family`, `td-glsl-shaders`, `td-comp-architecture`, `td-python-extension`, `td-geometry-instancing`, `td-lister-ui`) before creating any operator — even single ops
+4. **Review** — load `td-review-network`, check errors and wiring
+5. **Cleanup** — load `td-network-cleanup` (pulls `td-node-layout`) for alignment and annotations
+6. **Learn** — `/td-learn` to update skills from observed gaps
+
+## Skill Loading Discipline
+
+- Load the builder skill **before** creating any op, not after
+- Load `td-node-layout` during planning and cleanup
+- Load `td-performance-check` when cooking cost matters
+- Multi-family builds — load each family skill as the scope widens
+
+## Naming
+
+- `optype_purpose` — `null_output`, `cam_main`, `blur_edges`, `noise_background`
+- CamelCase parent shortcuts — `parent.Project`, `parent.FluidSim`
+- Never `../../` or `parent(2)` — use parent shortcuts
+
+## Paths
+
+- Always relative, never absolute
+- **Sibling** — name only (`null_edges`)
+- **Child** — `./child_name`
+- **Cross-COMP** — parent shortcut (`parent.Project`)
+- Never `../` in parameters
+
+## Tool Preferences
+
+- `edit_operator` — rename, reposition, flags, color (not `execute_code`)
+- `delete_operator` — deletion
+- `reposition_operators` — batch moves
+- `annotation` — create/edit annotations
+- `build_network` — multi-op creation with wiring in one call, preferred over `create_operator` + `wiring` sequences
+- `execute_code` — reserved for things no dedicated tool covers
+
+## Get Help First
+
+- Always `get_help(optype)` before guessing parameter names — TD abbreviations are unpredictable
+- Batch multiple types in one call
+- Menu values are included in the response — no extra lookups
+- Use `pattern`/`names` filters instead of `include_defaults`
+
+## Universal Gotchas
+
+- **`viewer=true`** on every operator at create time
+- **Never `absTime.seconds`** — overflows, use `lfoCHOP` or `timer`
+- **Set textDAT `language`** — defaults to `plain`; set `python`, `glsl`, etc.
+- **Errors before viewing** — `get_errors` first; don't `view_operator` on a broken op
+- **Check positions** — account for `nodeWidth`/`nodeHeight` (defaults 130x90, COMPs wider)
+- **Reference nulls** — downstream refs to named nulls survive insert/delete; references to live ops break
+
+## UX
+
+- Never auto-toggle user-facing parameters in startup scripts or callbacks (HTTPS, active states, etc.)
+- Set up paths and data silently; leave control toggles to the user
+
+## Token Frugality
+
+- Filter `parameters` and `get_help` with `pattern`/`names` — avoid full dumps
+- Avoid repeat `list_operators` on the same path
+- TOPs — prefer `inspect_values(sample_grid=8)` over `view_operator`
+- `view_operator` default `tiny`; only `low`/`high` when spatial detail matters
+- Use `offset`/`limit` when re-reading files

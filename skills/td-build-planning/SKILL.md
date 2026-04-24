@@ -24,7 +24,7 @@ Capture: rightmost X (for insertion point), Y range in use, existing null endpoi
 
 For each operator to create, decide:
 - **Type** — opType name (e.g. `noiseTOP`, `blurTOP`, `lfoCHOP`)
-- **Name** — follow naming guardrails in CLAUDE.md
+- **Name** — follow naming in `td-general` (`optype_purpose`)
 - **Family** — determines which builder skill to consult
 - **Position** — X,Y following the `td-node-layout` skill conventions
 - **Parameters** — use `get_help` tool for correct par names

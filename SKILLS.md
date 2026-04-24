@@ -14,6 +14,9 @@ Each skill is a directory containing:
 
 ### Builder Skills (11)
 
+> Load `td-general` before any TD task for workflow + cross-cutting rules.
+
+
 - **`td-top-family`** — TOP chains, render pipelines, compositing, feedback loops
 - **`td-chop-family`** — CHOP chains, audio, LFOs, animation, data-driven control
 - **`td-pop-family`** — POP networks, particles, geometryCOMP lifecycle, forces, instancing
@@ -26,8 +29,9 @@ Each skill is a directory containing:
 - **`td-python-extension`** — Extension classes, ext0object, parameter callbacks, scriptTOP/numpy
 - **`td-geometry-instancing`** — geometryCOMP instance setup, data sources (CHOP/DAT/TOP/POP), transforms, textures
 
-### Cross-Cutting Skills (2)
+### Cross-Cutting Skills (3)
 
+- **`td-general`** — Workflow phases, naming, paths, tool preferences, universal pitfalls. Load first on any TD task
 - **`td-node-layout`** — Network layout conventions: spacing, flow, positioning
 - **`td-performance-check`** — Selective cooking, GPU vs CPU, time patterns
 
