@@ -68,6 +68,7 @@ feedbackPOP has 1 input (reset/initial geometry). Loop back from output null is 
 - See `reference.md` for full attribute list (reserved, common, particlePOP-specific)
 - **Component access**: `P.x`, `P.y`, `P.z` (preferred) or `P(0)`, `P(1)`, `P(2)`. Use `.x/.y/.z` for readability
 - **User-defined**: lowercase first letter to avoid conflicts with Derivative attrs
+- **Debug values**: `inspect_values(path)` returns `pointAttributes[name].values` — sampled point values per attribute. `max_points=100` default (cap 10000), even-spaced stride when over cap. `attributes=["P","Cd"]` to filter. Type strings: `float3`, `int`, `float` (TD doesn't expose color/dir semantics — infer from name)
 
 ## Pitfalls
 
@@ -77,9 +78,9 @@ feedbackPOP has 1 input (reset/initial geometry). Loop back from output null is 
 - **feedbackPOP not reinitialized after attribute changes** — stale attribute schema
 - **Avoid SOPs inside geometryCOMPs** — use POP equivalents (spherePOP not sphereSOP)
 - **copyPOP too heavy** — N vertices × M particles. Use instancing instead for many copies
-- **TDPerlinNoise in GLSL POP** — doesn't exist in compute shaders
 - **GPU download stalls** — use `delayed=True` in Python for POP data access
 - **lookuptexturePOP defaults wrong** — `lookupindexattr0/1` default to `P(0)`/`P(1)` (world position), NOT `Tex(0)`/`Tex(1)`. Explicitly set to Tex coords when sampling by UV
 - **normalPOP tangents for PBR** — set `tang=alwayscompute` when using pbrMAT. Without tangents, PBR lighting fails
 - **Point vs vertex attributes for materials** — glslPOP writes point attributes. pbrMAT/phongMAT read Tex as vertex attributes. Use `attributeconvertPOP` (`convertop=pointtovert`, `inputattrs=Tex`) to convert before the output null. Also disable spherePOP's built-in vertex Tex (`texture=none`) to avoid conflicts
 - **mathmixPOP/mathcombinePOP sequences start empty** — `vec`/`comb` sequence pars don't exist until you add blocks: `n.par.comb.sequence.numBlocks = 2`. Must do this before setting `comb0oper` etc.
+- **rectanglePOP size is `sizeu`/`sizev`**, NOT `sizex/y/z/w` despite get_help showing those as components. Setting `sizex` silently does nothing. Same U/V naming on other 2D primitives with UV semantics — always verify live pars with `get_parameters(include_defaults=true)` before trusting get_help's `components` list

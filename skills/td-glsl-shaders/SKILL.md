@@ -76,7 +76,6 @@ See the `td-dat-family` skill for full sync details.
 
 ## Pitfalls
 
-- **Missing TDOutputSwizzle()** — silent wrong output
 - **Uniforms not declared in shader** — compiles but reads zero
 - **TDPerlinNoise() in GLSL POP** — not available in compute shaders, only TOP/MAT
 - **Creating separate textDATs for glslTOP** — rename and reuse auto-created docked DATs
@@ -84,5 +83,5 @@ See the `td-dat-family` skill for full sync details.
 - **feedbackTOP before wiring** — outputs 2D texture, causes 3D compile errors downstream
 - **Inline noise functions** — use noiseTOP as sampler input instead
 - **Delta time** — `me.time.step` doesn't exist, use `1.0/me.time.rate` or `absTime.stepSeconds`
-- **glslPOP `const` for dynamic values** — causes shader recompilation every frame and hard threshold switching. Use `vec` sequence for runtime uniforms
 - **`centroid` in GLSL** — reserved keyword in GLSL 4.60, use `ctr` or similar
+- **glslmultiTOP has no `resolution` par** — use `resolutionw`/`resolutionh` + `outputresolution='custom'` (or `'useinput'`). Setting `resolution` errors with `'td.ParCollection' object has no attribute 'resolution'` and halts `build_network` mid-way

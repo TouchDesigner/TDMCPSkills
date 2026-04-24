@@ -2,12 +2,10 @@
 
 ## Basic Extension Component
 
-```
-baseCOMP (ext0object, ext0promote=True, viewer=True)
-  ├── MyExt (textDAT, language=python) at X=-200, Y=0
-  ├── parameter_callbacks (parameterexecuteDAT, op=.., pars=*, builtin=False) at X=-200, Y=-125
-  └── [main ops] at X=0+, flowing right → nullTOP at chain end
-```
+baseCOMP with `ext0object` set, `ext0promote=True`, `viewer=True`. Children:
+- `MyExt` — textDAT, `language=python`, at X=-200 Y=0
+- `parameter_callbacks` — parameterexecuteDAT with `op=..`, `pars=*`, `builtin=False`, at X=-200 Y=-125
+- Main ops at X=0+, flowing right → nullTOP at chain end
 
 ## Extension Class Template
 

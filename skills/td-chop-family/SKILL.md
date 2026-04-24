@@ -81,7 +81,4 @@ Use `inspect_values(path, include_samples=true)` to read full sample arrays from
 - **absTime.seconds for animation** — floats lose precision after hours, use lfoCHOP or timerCHOP
 - **CHOP reference syntax** — use `op('path')['channelname']` not `op('path').chan('name')`
 - **Rate mismatch** — different CHOPs may run at different sample rates, use resampleCHOP
-- **noiseCHOP types** — defaults may not be what you want, check `get_help` for type options
-- **expressionCHOP performance** — runs full Python interpreter per sample. For pure math (atan2, sqrt, trig), use functionCHOP or mathCHOP instead
-- **logicCHOP gt/lt** — does NOT compare against boundmin. See "Comparison / Threshold Detection" above
 - **scriptCHOP exec() scope** — `exec(op('dat').text)` in TD Python: nested functions can't access file-scope variables. Use flat loop structure or inline all logic in main loop body

@@ -24,6 +24,13 @@ Always set `language` parameter on textDATs — defaults to `plain` which loses 
 
 ## Callback DATs
 
+Each callback DAT has a dedicated **source-reference par** that must be set. Without it, the DAT fires no callbacks and raises no error — silently inert. `fromop` is not the source; it's just where `op()` expressions evaluate.
+
+- `chopexecuteDAT` → `chop` par
+- `datexecuteDAT` → `dat` par
+- `panelexecuteDAT` → `panel` par
+- `parameterexecuteDAT` → `op` par
+
 ### parameterexecuteDAT
 Routes parameter changes to handlers. Standard setup:
 - `op` par = `..` (parent COMP)
@@ -76,3 +83,4 @@ The `file` parameter on the DAT uses the same relative path from the .toe file.
 - **chopexec without selective cooking** — can fire excessively, use with quantized/selective nullCHOP upstream
 - **Blocking Python in callbacks** — callbacks run on main thread, no HTTP/heavy compute. Use `run()` with `delayFrames` for deferred work
 - **Missing callback DAT** — extensions won't react to parameter changes without parameterexecuteDAT
+- **Silently-inert execute DAT** — `*executeDAT` with `active=true` and triggers enabled but the source par empty (`chop`/`dat`/`op`/`panel`) fires nothing and raises no error. Always set the source par when creating one

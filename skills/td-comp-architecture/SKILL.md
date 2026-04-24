@@ -36,6 +36,7 @@ Use `edit_custom_parameters` tool — `add`, `edit`, `delete`, `sort`, `rename`,
 
 - `enableExpr` — grey out conditionally: `par.enableExpr = 'me.par.SomeToggle'`
 - `startSection` — visual divider above a parameter
+- **Pulse from Python**: `comp.par.PulseName.pulse()`, not `comp.pulse('PulseName')`
 
 ## State Output Pattern
 
