@@ -35,13 +35,18 @@ Each skill is a directory containing:
 - **`td-node-layout`** — Network layout conventions: spacing, flow, positioning
 - **`td-performance-check`** — Selective cooking, GPU vs CPU, time patterns
 
-### Workflow Skills (5)
+### Workflow Skills (3)
 
 - **`td-build-planning`** — Before building: scout network, plan phases, allocate positions
 - **`td-review-network`** — After building: validate errors, wiring, parameter correctness
 - **`td-network-cleanup`** — After review: layout polish, annotations, alignment, spacing
-- **`td-learn`** — Meta: review the conversation and audit skills for consistency
-- **`td-skills-local`** — Install, update, or remove skills in the current project
+
+### Contributor Skills
+
+Not distributed via plugin or `install.py`. Live in `.claude/skills/` and auto-load only when Claude Code is working in a clone of this repo.
+
+- **`td-learn`** — Review conversation, audit skills, propose updates (for skill authors)
+- **`td-skills-local`** — Project-local install helper (legacy; superseded by plugin install)
 
 ## Build Order
 

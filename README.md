@@ -24,23 +24,15 @@ python install.py install
 
 When no local repo is detected, the installer can also fetch directly from GitHub.
 
-## Project-Local Skills (`/td-skills-local`)
+## Project-Local Install
 
-Once installed globally from a git clone, you can install skills into any project directly from Claude Code:
-
-1. Open Claude Code in your project directory
-2. Ask Claude to `/td-skills-local` or say "install skills locally"
-3. Claude reads the registered repo path and installs skills into `./.claude/skills/`
-
-Project-level skills override global skills of the same name. This lets you customize skills per-project while keeping global defaults.
-
-You can also do it manually:
+Install skills into a specific project's `.claude/skills/` (overrides the global set for that project):
 
 ```bash
 python install.py install --project /path/to/your/td-project
 ```
 
-To remove local skills and revert to the global set:
+Remove them and revert to global:
 
 ```bash
 python install.py uninstall --project .
@@ -70,18 +62,20 @@ git merge upstream/main
 python install.py install
 ```
 
-Use `/td-skills-local` to push your updated skills into individual projects as you go.
+Reinstall after edits to push changes to any project using them.
 
-## Improving Skills with `/td-learn`
+## Improving Skills with `/td-learn` (Contributors)
 
-The `td-learn` skill helps you improve the skill system based on real usage. After a build session, run `/td-learn` in Claude Code. It will:
+`/td-learn` is a contributor tool that lives in this repo's `.claude/skills/` — it auto-loads only when Claude Code is working inside a clone of TDMCPSkills. End-user installs (plugin or `install.py`) don't include it.
 
-- Review the conversation for struggles, stalls, and points where instructions led to wrong outcomes
+Run `/td-learn` after a build session to:
+
+- Review the conversation for struggles, stalls, and wrong outcomes
 - Audit loaded skills for missing knowledge, contradictions, or redundancy
 - Run a size/token audit across all skills to flag bloat
 - Propose specific edits to skill files
 
-This is how you create and refine your own skills. If you notice Claude struggling with a particular pattern, `/td-learn` identifies the gap and suggests what to add. Commit your improvements to your branch and reinstall.
+Commit proposed improvements on your branch and reinstall.
 
 ## Update
 

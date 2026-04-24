@@ -5,6 +5,8 @@ user_invocable: true
 
 # Learn
 
+**Contributor tool.** Lives in `.claude/skills/` so it only loads when Claude Code is working in a clone of the TDMCPSkills repo. End users who install via plugin or `install.py` never see it.
+
 Reviews the current conversation and audits the skill system. Surfaces struggles, duplicates, and stale rules, then proposes concrete skill improvements.
 
 ## When to Run
@@ -115,7 +117,7 @@ Run across **all** skills (not just touched ones):
 
 ### 11. Report Stats
 
-End every run with: `python skills/td-learn/scripts/skill_stats.py`
+End every run with: `python .claude/skills/td-learn/scripts/skill_stats.py`
 
 Reports lines and estimated tokens per skill, sorted by token count. Flags skills over the ~80 line / ~4,000 token budget.
 
