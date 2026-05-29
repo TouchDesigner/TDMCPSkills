@@ -1,0 +1,19 @@
+{
+  "name": "touchdesigner",
+  "owner": {
+    "name": "TouchDesigner"
+  },
+  "description": "TouchDesigner MCP skills and server endpoint for Claude Code.",
+  "plugins": [
+    {
+      "name": "tdmcp-skills",
+      "source": "./",
+      "version": "1.0.0",
+      "description": "Skills that teach Claude how to build TouchDesigner networks with the TDMCP server, plus the MCP server endpoint.",
+      "author": {
+        "name": "TouchDesigner"
+      },
+      "homepage": "https://github.com/TouchDesigner/TDMCPSkills"
+    }
+  ]
+}

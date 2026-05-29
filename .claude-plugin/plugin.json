@@ -1,0 +1,10 @@
+{
+  "name": "tdmcp-skills",
+  "version": "1.0.0",
+  "description": "Skills for building TouchDesigner networks with the TDMCP server, plus the MCP server endpoint.",
+  "author": {
+    "name": "TouchDesigner"
+  },
+  "homepage": "https://github.com/TouchDesigner/TDMCPSkills",
+  "repository": "https://github.com/TouchDesigner/TDMCPSkills"
+}
