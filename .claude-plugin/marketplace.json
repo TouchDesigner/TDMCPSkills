@@ -5,11 +5,12 @@
     "email": "jarrett@derivative.ca",
     "url": "https://derivative.ca"
   },
+  "description": "TouchDesigner MCP skills and server endpoint.",
   "plugins": [
     {
       "name": "tdmcp-skills",
       "source": "./",
-      "description": "TouchDesigner skills for Claude Code — workflow, builders, and pitfalls for TOPs, CHOPs, POPs, SOPs, GLSL, materials, components, and UI.",
+      "description": "TouchDesigner skills — workflow, builders, and pitfalls for TOPs, CHOPs, POPs, SOPs, GLSL, materials, components, and UI.",
       "version": "1.1.0"
     }
   ]
