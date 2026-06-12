@@ -1,6 +1,6 @@
 # TDMCP Skills
 
-Skills teach Claude how to work with TouchDesigner effectively. They are installed to Claude Code's skill directories and auto-discovered.
+Skills teach AI coding agents how to work with TouchDesigner effectively. They are installed to each host's skill discovery directory (see [README.md](README.md) for supported hosts and install targets) and auto-discovered.
 
 ## Structure
 
