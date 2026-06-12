@@ -1,4 +1,5 @@
 ---
+name: td-dat-family
 description: DAT operations — table data, Python callbacks, parameter execute, CHOP execute. Use when creating or populating any DAT.
 ---
 

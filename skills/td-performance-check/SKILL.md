@@ -1,4 +1,5 @@
 ---
+name: td-performance-check
 description: TouchDesigner optimization — selective cooking, operator-driven animation, avoiding per-frame Python.
 ---
 

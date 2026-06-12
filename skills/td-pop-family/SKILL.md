@@ -1,4 +1,5 @@
 ---
+name: td-pop-family
 description: POP networks — particles, geometryCOMP lifecycle, feedback, forces, instancing. Use when building GPU point operations.
 ---
 

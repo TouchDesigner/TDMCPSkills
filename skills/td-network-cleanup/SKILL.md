@@ -1,4 +1,5 @@
 ---
+name: td-network-cleanup
 description: Clean up TouchDesigner network layout — alignment, spacing, annotations, colors. Use after builds to organize operators.
 ---
 

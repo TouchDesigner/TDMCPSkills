@@ -1,4 +1,5 @@
 ---
+name: td-review-network
 description: Validate completed builds — check errors, verify wiring, diagnose root causes. Use after builds to verify correctness.
 ---
 

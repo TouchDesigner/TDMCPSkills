@@ -1,4 +1,5 @@
 ---
+name: td-chop-family
 description: Build CHOP chains for audio, LFOs, animation, and data-driven control. Use when creating CHOPs or driving parameters from CHOPs.
 ---
 

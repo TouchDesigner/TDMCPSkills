@@ -1,4 +1,5 @@
 ---
+name: td-mat-family
 description: Materials — constantMAT, pbrMAT, pointspriteMAT, glslMAT, placement, blending. Use when assigning or creating materials for rendering.
 ---
 

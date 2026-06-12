@@ -1,10 +1,11 @@
 ---
+name: td-general
 description: Core TouchDesigner conventions — workflow phases, naming, paths, tool preferences, universal pitfalls. Load before any TouchDesigner build, edit, or review.
 ---
 
 # TouchDesigner General Conventions
 
-Cross-cutting rules for every TouchDesigner task. Family-specific knowledge lives in builder skills; this skill tells Claude which to load and what applies everywhere.
+Cross-cutting rules for every TouchDesigner task. Family-specific knowledge lives in builder skills; this skill tells the agent which to load and what applies everywhere.
 
 ## Workflow
 
@@ -13,7 +14,6 @@ Cross-cutting rules for every TouchDesigner task. Family-specific knowledge live
 3. **Build** — load the relevant builder skill (`td-top-family`, `td-chop-family`, `td-pop-family`, `td-sop-family`, `td-mat-family`, `td-dat-family`, `td-glsl-shaders`, `td-comp-architecture`, `td-python-extension`, `td-geometry-instancing`, `td-lister-ui`) before creating any operator — even single ops
 4. **Review** — load `td-review-network`, check errors and wiring
 5. **Cleanup** *(required)* — load `td-network-cleanup` before reporting any multi-op build complete
-6. **Learn** — `/td-learn` to update skills from observed gaps
 
 ## Skill Loading Discipline
 
@@ -52,6 +52,7 @@ Cross-cutting rules for every TouchDesigner task. Family-specific knowledge live
 - Batch multiple types in one call
 - Menu values are included in the response — no extra lookups
 - Use `pattern`/`names` filters instead of `include_defaults`
+- Empty filtered result = your name guess was wrong, not a missing parameter — re-run `get_help` unfiltered and match by label (blurTOP blur amount = `size`, label "Filter Size")
 
 ## Universal Gotchas
 

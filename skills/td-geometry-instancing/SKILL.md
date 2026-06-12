@@ -1,4 +1,5 @@
 ---
+name: td-geometry-instancing
 description: Geometry instancing — geometryCOMP instance setup, data sources (CHOP/DAT/TOP/POP), transforms, textures. Use when instancing geometry.
 ---
 

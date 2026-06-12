@@ -1,4 +1,5 @@
 ---
+name: td-lister-ui
 description: Lister and TreeLister UI — tables, interactive lists, data browsers. Use when building list-based interfaces.
 ---
 

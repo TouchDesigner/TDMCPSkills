@@ -1,4 +1,5 @@
 ---
+name: td-comp-architecture
 description: Component design — baseCOMPs, extensions, custom parameters, parent shortcuts, modularity. Use when creating COMPs or structuring projects.
 ---
 

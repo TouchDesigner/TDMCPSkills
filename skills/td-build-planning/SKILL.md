@@ -1,4 +1,5 @@
 ---
+name: td-build-planning
 description: Plan TouchDesigner builds — scout networks, decide operators, allocate positions, phase work. Use before any multi-operator build.
 ---
 

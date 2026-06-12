@@ -1,4 +1,5 @@
 ---
+name: td-node-layout
 description: Network layout conventions — spacing, flow direction, positioning patterns. Use during any build or cleanup that places operators.
 ---
 

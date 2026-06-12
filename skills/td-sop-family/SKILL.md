@@ -1,4 +1,5 @@
 ---
+name: td-sop-family
 description: SOP geometry — procedural modeling, CPU-based geometry operations. Use when SOPs are needed (prefer POPs for GPU work).
 ---
 
