@@ -1,16 +1,25 @@
 #!/usr/bin/env python3
-"""TDMCPSkills installer — install, uninstall, or check status of TouchDesigner skills for Claude Code.
+"""TDMCPSkills installer — install, uninstall, or check status of TouchDesigner skills.
 
-Dual-mode: when run from the TDMCPSkills repo (skills/ dir present), installs from local files.
-When run standalone from any directory, fetches the latest from GitHub automatically.
+Supports multiple agent hosts through install targets:
+
+    agents        ~/.agents/skills/   (portable — Codex, Gemini CLI, OpenCode)
+    claude        ~/.claude/skills/   (Claude Code)
+    codex-legacy  ~/.codex/skills/    (Codex compatibility, global only)
+    all           agents + claude
+
+Dual-mode: when run from the TDMCPSkills repo (skills/ dir present), installs from
+local files. When run standalone from any directory, fetches the latest from GitHub.
 
 Usage:
-    python install.py install              # global install (~/.claude/skills/)
-    python install.py install --project .  # project-local install
-    python install.py uninstall            # global uninstall
-    python install.py uninstall --project .
-    python install.py status               # check install + available updates
-    python install.py status --project .
+    python install.py install --target agents       # portable global install
+    python install.py install --target claude       # Claude Code global install
+    python install.py install --target agents --project .   # project-local
+    python install.py status --target agents
+    python install.py uninstall --target agents
+
+Skill installation does NOT configure the TDMCP MCP server — see README.md for
+per-host MCP configuration.
 """
 
 import argparse
@@ -29,6 +38,64 @@ MANIFEST_NAME = "td-skills-manifest.json"
 SKILL_PREFIX = "td-"
 DEFAULT_REPO = "TouchDesigner/TDMCPSkills"
 DEFAULT_BRANCH = "main"
+DEFAULT_TARGET = "claude"  # migration default — will move to "agents" in a future release
+
+
+# ---------------------------------------------------------------------------
+# Target profiles
+# ---------------------------------------------------------------------------
+
+class Target:
+    def __init__(self, ident, display, global_path, project_subpath, reload_hint):
+        self.ident = ident
+        self.display = display
+        self.global_path = global_path          # Path or None
+        self.project_subpath = project_subpath  # str or None (None = no project installs)
+        self.reload_hint = reload_hint
+
+    def resolve(self, project_path):
+        """Resolve the skills directory for this target."""
+        if project_path:
+            if not self.project_subpath:
+                print(f"Error: target '{self.ident}' does not support project installs.")
+                sys.exit(1)
+            return Path(project_path).resolve() / self.project_subpath
+        return self.global_path
+
+
+TARGETS = {
+    "agents": Target(
+        "agents",
+        "Portable agents (Codex, Gemini CLI, OpenCode)",
+        Path.home() / ".agents" / "skills",
+        ".agents/skills",
+        "Restart the agent CLI (or start a new session) so it re-discovers skills.",
+    ),
+    "claude": Target(
+        "claude",
+        "Claude Code",
+        Path.home() / ".claude" / "skills",
+        ".claude/skills",
+        "Restart Claude Code or start a new session to pick up skill changes.",
+    ),
+    "codex-legacy": Target(
+        "codex-legacy",
+        "Codex (legacy ~/.codex/skills)",
+        Path.home() / ".codex" / "skills",
+        None,
+        "Restart Codex or start a new session to pick up skill changes.",
+    ),
+}
+
+# "all" expands to the primary targets; codex-legacy stays explicit so Codex
+# users don't end up with duplicate skills in two discovery locations.
+ALL_TARGETS = ["agents", "claude"]
+
+
+def expand_targets(name):
+    if name == "all":
+        return [TARGETS[t] for t in ALL_TARGETS]
+    return [TARGETS[name]]
 
 
 # ---------------------------------------------------------------------------
@@ -117,15 +184,8 @@ def get_source_skills(source_dir):
 
 
 # ---------------------------------------------------------------------------
-# Target helpers
+# Manifest helpers
 # ---------------------------------------------------------------------------
-
-def resolve_target(project_path):
-    """Resolve the target .claude/skills/ directory."""
-    if project_path:
-        return Path(project_path).resolve() / ".claude" / "skills"
-    return Path.home() / ".claude" / "skills"
-
 
 def read_manifest(target_dir):
     """Read existing manifest from target, or None."""
@@ -138,9 +198,10 @@ def read_manifest(target_dir):
     return None
 
 
-def write_manifest(target_dir, version, skill_names, source_label, repo_path=None):
+def write_manifest(target_dir, target_ident, version, skill_names, source_label, repo_path=None):
     """Write manifest to target directory."""
     manifest = {
+        "target": target_ident,
         "version": version,
         "installed": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "source": source_label,
@@ -165,72 +226,89 @@ def remove_skills(target_dir, skill_names):
     return removed
 
 
+def find_unmanaged_conflicts(target_dir, incoming_names, manifest):
+    """Skill dirs that would be overwritten but are not owned by our manifest."""
+    if not target_dir.exists():
+        return []
+    owned = set(manifest.get("skills", [])) if manifest else set()
+    conflicts = []
+    for name in incoming_names:
+        path = target_dir / name
+        if path.is_dir() and name not in owned:
+            conflicts.append(name)
+    return conflicts
+
+
 # ---------------------------------------------------------------------------
 # Commands
 # ---------------------------------------------------------------------------
 
-def install_from(source_dir, target_dir, source_label, repo_path=None):
+def install_from(source_dir, target, target_dir, source_label, repo_path=None, replace=False):
     """Install skills from source_dir into target_dir."""
     version = get_version(source_dir)
     source_skills = get_source_skills(source_dir)
     skill_names = [d.name for d in source_skills]
 
+    manifest = read_manifest(target_dir)
+
+    # Never overwrite skill directories we don't own unless told to
+    conflicts = find_unmanaged_conflicts(target_dir, skill_names, manifest)
+    if conflicts and not replace:
+        print(f"Error: {target_dir} contains skill directories not managed by TDMCPSkills:")
+        for name in conflicts:
+            print(f"    {name}")
+        print("  These were not installed by this tool (or the manifest is missing).")
+        print("  Re-run with --replace to overwrite them, or move them out of the way.")
+        sys.exit(1)
+
     target_dir.mkdir(parents=True, exist_ok=True)
 
-    # Remove existing install if manifest exists
-    manifest = read_manifest(target_dir)
+    # Remove the previous install — only what our manifest records
     if manifest:
         old_names = manifest.get("skills", [])
         old_version = manifest.get("version", "unknown")
         removed = remove_skills(target_dir, old_names)
         if removed:
             print(f"Removed {len(removed)} skills from previous install (v{old_version})")
-    else:
-        # First install — clean any stale td-* dirs
-        if target_dir.exists():
-            stale = [
-                d for d in target_dir.iterdir()
-                if d.is_dir() and d.name.startswith(SKILL_PREFIX)
-            ]
-            if stale:
-                for d in stale:
-                    shutil.rmtree(d)
-                print(f"Cleaned {len(stale)} stale td-* directories")
 
     # Copy skills
     for source in source_skills:
         dest = target_dir / source.name
+        if dest.exists():
+            shutil.rmtree(dest)  # unmanaged conflict, user passed --replace
         shutil.copytree(source, dest)
 
-    write_manifest(target_dir, version, skill_names, source_label, repo_path)
+    write_manifest(target_dir, target.ident, version, skill_names, source_label, repo_path)
 
-    print(f"Installed TDMCPSkills v{version}")
+    print(f"Installed TDMCPSkills v{version} [{target.ident}]")
     print(f"  {len(skill_names)} skills -> {target_dir}")
     for name in skill_names:
         print(f"    {name}")
+    print(f"  {target.reload_hint}")
 
 
-def do_install(target_dir, repo=DEFAULT_REPO, version_tag=None):
+def do_install(target, target_dir, repo=DEFAULT_REPO, version_tag=None, replace=False):
     """Install or upgrade skills — auto-detects local vs remote source."""
     local_source = detect_local_source()
 
     if local_source:
         print(f"Installing from local source: {local_source}")
         source_label = f"local:{local_source}"
-        install_from(local_source, target_dir, source_label, repo_path=local_source)
+        install_from(local_source, target, target_dir, source_label,
+                     repo_path=local_source, replace=replace)
     else:
         tmp_dir = None
         try:
             tmp_dir, source_dir = fetch_remote_skills(repo, version_tag)
             source_label = f"github:{repo}@{version_tag or DEFAULT_BRANCH}"
-            install_from(source_dir, target_dir, source_label)
+            install_from(source_dir, target, target_dir, source_label, replace=replace)
         finally:
             if tmp_dir:
                 shutil.rmtree(tmp_dir, ignore_errors=True)
 
 
-def do_uninstall(target_dir):
-    """Uninstall skills from target directory."""
+def do_uninstall(target, target_dir):
+    """Uninstall skills from target directory — only manifest-owned skills."""
     manifest = read_manifest(target_dir)
     if not manifest:
         print(f"No TDMCPSkills installation found in {target_dir}")
@@ -247,7 +325,7 @@ def do_uninstall(target_dir):
     if manifest_path.exists():
         manifest_path.unlink()
 
-    print(f"Uninstalled TDMCPSkills v{version}")
+    print(f"Uninstalled TDMCPSkills v{version} [{target.ident}]")
     print(f"  Removed {len(removed)} skills from {target_dir}")
     for name in removed:
         print(f"    {name}")
@@ -269,11 +347,28 @@ def check_remote_version(repo=DEFAULT_REPO):
         return None
 
 
-def do_status(target_dir, repo=DEFAULT_REPO):
+def report_other_installs(current_target, project_path):
+    """Note other known global installs so duplicate discovery is visible."""
+    if project_path:
+        return
+    others = []
+    for ident, target in TARGETS.items():
+        if ident == current_target.ident:
+            continue
+        if read_manifest(target.global_path):
+            others.append(f"{ident} ({target.global_path})")
+    if others:
+        print("  Also installed at: " + "; ".join(others))
+        print("  (multiple discovery locations can produce duplicate skills in some hosts —")
+        print("   prefer one primary target per machine)")
+
+
+def do_status(target, target_dir, project_path, repo=DEFAULT_REPO):
     """Report install status and check for updates."""
     manifest = read_manifest(target_dir)
     if not manifest:
-        print(f"No TDMCPSkills installation found in {target_dir}")
+        print(f"No TDMCPSkills installation found in {target_dir} [{target.ident}]")
+        report_other_installs(target, project_path)
         return
 
     version = manifest.get("version", "unknown")
@@ -286,7 +381,7 @@ def do_status(target_dir, repo=DEFAULT_REPO):
     present = [n for n in skill_names if (target_dir / n).is_dir()]
     missing = [n for n in skill_names if n not in present]
 
-    print(f"TDMCPSkills v{version}")
+    print(f"TDMCPSkills v{version} [{target.ident}]")
     print(f"  Installed: {installed}")
     print(f"  Source:    {source}")
     if repo_path:
@@ -297,11 +392,13 @@ def do_status(target_dir, repo=DEFAULT_REPO):
     if missing:
         print(f"  Missing:   {', '.join(missing)}")
 
+    report_other_installs(target, project_path)
+
     # Check for updates
     remote_version = check_remote_version(repo)
     if remote_version and remote_version != version:
         print(f"  Update available: v{version} -> v{remote_version}")
-        print("  Run 'python install.py install' to update")
+        print(f"  Run 'python install.py install --target {target.ident}' to update")
     elif remote_version:
         print("  Up to date")
 
@@ -312,9 +409,10 @@ def do_status(target_dir, repo=DEFAULT_REPO):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="TDMCPSkills installer for Claude Code",
+        description="TDMCPSkills installer for agent CLIs (Claude Code, Codex, Gemini CLI, OpenCode)",
         epilog="When run from the TDMCPSkills repo, installs from local files. "
-               "Otherwise fetches the latest from GitHub automatically.",
+               "Otherwise fetches the latest from GitHub automatically. "
+               "Installing skills does not configure the TDMCP MCP server — see README.md.",
     )
     parser.add_argument(
         "command",
@@ -322,9 +420,24 @@ def main():
         help="Action to perform",
     )
     parser.add_argument(
+        "--target",
+        choices=[*TARGETS.keys(), "all"],
+        default=None,
+        help=f"Install target: agents (portable ~/.agents/skills), claude (~/.claude/skills), "
+             f"codex-legacy (~/.codex/skills), or all (agents + claude). "
+             f"Default: {DEFAULT_TARGET} (for compatibility; 'agents' is recommended for "
+             f"Codex, Gemini CLI, and OpenCode)",
+    )
+    parser.add_argument(
         "--project",
         metavar="PATH",
-        help="Target a project's .claude/skills/ instead of global ~/.claude/skills/",
+        help="Target a project's skills directory (e.g. .agents/skills/ or .claude/skills/) "
+             "instead of the global location",
+    )
+    parser.add_argument(
+        "--replace",
+        action="store_true",
+        help="Overwrite conflicting td-* skill directories not managed by TDMCPSkills",
     )
     parser.add_argument(
         "--version",
@@ -340,14 +453,23 @@ def main():
     )
 
     args = parser.parse_args()
-    target_dir = resolve_target(args.project)
 
-    if args.command == "install":
-        do_install(target_dir, repo=args.repo, version_tag=args.version_tag)
-    elif args.command == "uninstall":
-        do_uninstall(target_dir)
-    elif args.command == "status":
-        do_status(target_dir, repo=args.repo)
+    target_name = args.target
+    if target_name is None:
+        target_name = DEFAULT_TARGET
+        print(f"No --target given; defaulting to '{DEFAULT_TARGET}'.")
+        print("  For Codex, Gemini CLI, or OpenCode use: --target agents\n")
+
+    for target in expand_targets(target_name):
+        target_dir = target.resolve(args.project)
+        if args.command == "install":
+            do_install(target, target_dir, repo=args.repo,
+                       version_tag=args.version_tag, replace=args.replace)
+        elif args.command == "uninstall":
+            do_uninstall(target, target_dir)
+        elif args.command == "status":
+            do_status(target, target_dir, args.project, repo=args.repo)
+        print()
 
 
 if __name__ == "__main__":
