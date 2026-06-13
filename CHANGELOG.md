@@ -8,6 +8,8 @@ versions are tracked in `VERSION` and the Claude plugin manifests.
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-06-13
+
 ### Added
 - **Skill Map** in `td-general` — an intent → skill routing list (one bullet per
   skill) with phase tags (`pre`/`during`/`post-build`/`anytime`) covering all 18
