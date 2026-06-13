@@ -1,6 +1,6 @@
 ---
 name: td-python-extension
-description: Python extensions — ext0object, extension classes, parameter callbacks, scriptTOP/numpy, lifecycle. Use when building Python-driven baseCOMPs.
+description: Python extensions — extension classes, ext0object, parameter callbacks, lifecycle, state/persistence, scriptTOP/numpy. Use when building Python-driven baseCOMPs.
 ---
 
 # Python Extensions

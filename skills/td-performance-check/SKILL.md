@@ -1,6 +1,6 @@
 ---
 name: td-performance-check
-description: TouchDesigner optimization — selective cooking, operator-driven animation, avoiding per-frame Python.
+description: TouchDesigner performance — selective cooking, GPU vs CPU, operator-driven animation, avoiding per-frame Python. Use when cooking cost matters or profiling a network.
 ---
 
 # Performance

@@ -1,6 +1,6 @@
 ---
 name: td-glsl-shaders
-description: GLSL shaders in TouchDesigner — pixel, compute, vertex, uniforms, docked DATs. Use when writing any GLSL shader code or creating glslTOP/glslMAT.
+description: GLSL shaders in TouchDesigner — pixel, compute, vertex, POP, uniforms, docked DATs. Use when writing GLSL or creating glslTOP/glslMAT/glslPOP.
 ---
 
 # GLSL Shaders

@@ -1,6 +1,6 @@
 ---
 name: td-general
-description: Core TouchDesigner conventions — workflow phases, naming, paths, tool preferences, universal pitfalls. Load before any TouchDesigner build, edit, or review.
+description: Core TouchDesigner conventions and the skill map — workflow phases, naming, paths, tool preferences, universal pitfalls. Load FIRST on any TouchDesigner task, before any other td- skill.
 ---
 
 # TouchDesigner General Conventions
@@ -34,9 +34,34 @@ If the human gets frustrated and says "just build something," you can relent and
 
 1. **Scout** — `project_info` first, then `list_operators`, `get_connections`, `get_errors`
 2. **Plan** — load `td-build-planning` before any multi-operator build
-3. **Build** — load the relevant builder skill (`td-top-family`, `td-chop-family`, `td-pop-family`, `td-sop-family`, `td-mat-family`, `td-dat-family`, `td-glsl-shaders`, `td-comp-architecture`, `td-python-extension`, `td-geometry-instancing`, `td-lister-ui`) before creating any operator — even single ops
+3. **Build** — load the relevant builder skill (see **Skill Map** below) before creating any operator — even single ops
 4. **Review** — load `td-review-network`, check errors and wiring
 5. **Cleanup** *(required)* — load `td-network-cleanup` before reporting any build complete
+
+## Skill Map
+
+Load `td-general` first on any TD task, then load by intent. Respect phase — don't load `post-build` skills mid-build. `anytime` = load on intent match. Format: `skill — intent · phase`.
+
+- `td-general` — core conventions + this map (this file) · anytime
+- `td-build-planning` — plan a multi-operator build · pre-build
+- `td-node-layout` — position / space operators · during-build
+- `td-chop-family` — CHOPs: audio, LFO, animation, data-driven control · anytime
+- `td-top-family` — TOPs: image, compositing, render, feedback · anytime
+- `td-pop-family` — POPs: GPU particles, points, forces · anytime
+- `td-sop-family` — SOPs: CPU procedural geometry · anytime
+- `td-dat-family` — DATs: tables, Python callbacks, execute DATs · anytime
+- `td-mat-family` — materials / shading assignment · anytime
+- `td-glsl-shaders` — GLSL: pixel, compute, vertex, POP shaders · anytime
+- `td-comp-architecture` — COMP design, extensions, custom pars, modularity · anytime
+- `td-python-extension` — Python extension classes, lifecycle, state · anytime
+- `td-geometry-instancing` — instance geometry from CHOP/DAT/TOP/POP · anytime
+- `td-lister-ui` — Lister / TreeLister UI, data browsers · anytime
+- `td-chill` — reset pace / collaborative check-in · anytime
+- `td-review-network` — verify, error-check a finished build · post-build
+- `td-performance-check` — optimize cooking, profile performance · post-build
+- `td-network-cleanup` — align, annotate, polish layout · post-build
+
+Ambiguous intent → ask which applies before loading. Multi-domain builds → load each family skill as scope widens.
 
 ## Skill Loading Discipline
 
