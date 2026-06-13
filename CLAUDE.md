@@ -25,3 +25,8 @@ Skills for the TouchDesigner MCP server. Each skill teaches Claude how to work w
 - No tables — use bullet lists
 - Procedures over declarations — teach *how to approach*, not *what to produce*
 - All skill directories must use `td-` prefix for namespace isolation
+
+## Changelog
+
+- Every change to distributed content (skills, `install.py`, `validate.py`, docs, `VERSION`) → add an entry under `[Unreleased]` in `CHANGELOG.md` before committing. Keep a Changelog format: Added / Changed / Fixed / Removed.
+- Adding/removing a skill → also update its row in `td-general`'s Skill Map (`validate.py` enforces map↔skills sync).

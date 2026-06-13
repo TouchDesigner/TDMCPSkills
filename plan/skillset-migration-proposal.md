@@ -89,7 +89,7 @@ Credibility check — the repo is not strictly dominated:
 
 Migration is not a straight copy. The two trees encode different distribution models; merging requires choosing:
 
-1. **Dispatcher vs flat.** *Resolved — see "Architecture: dispatcher vs flat" below.* Short version: keep flat as the canonical portable content, adopt the dispatcher as an opt-in Claude-Code-only adapter. Not an either/or.
+1. **Dispatcher vs flat.** *Resolved — see "Architecture: dispatcher vs flat" below.* Short version: keep flat as the canonical portable content; routing is implemented as a validator-enforced **Skill Map** in `td-general` (done on `darien`), not a separate dispatcher skill. A full dispatcher adapter remains optional.
 2. **`references/` subfolders vs flat `reference.md`.** Production uses many small load-on-demand files; repo uses one file per skill. Subfolders lower per-task token load but add file count. `validate.py`'s portable contract would need to accept the subfolder layout.
 3. **Wikilinks.** `[[skill-name]]` cross-refs assume the dispatcher resolver. In the flat/portable model these must degrade gracefully (plain names) — `validate.py` already checks reference resolvability.
 4. **GLSL: 4 split skills vs 1 merged.** Real tradeoff — split = lower token-load per task + better discovery; merged = fewer files. Audit favors the split on coverage, but this is a maintainer call.
@@ -122,14 +122,16 @@ A Claude Code user installs the dispatcher → gets explicit routing + phase-gat
 
 **Resolution:** stay **flat-canonical** for portability; preserve the dispatcher's routing intelligence (phase-gating, disambiguation, load-first enforcement) as an **opt-in Claude-Code adapter**. This is also the direct answer to the maintainer's biggest objection ("we're multi-host, your dispatcher is single-host") — the proposal does not ask them to abandon flat; it adds a layer for the host that benefits, and the dispatcher's routing logic is the most valuable non-content asset in the production set.
 
+**Update — implemented on `darien`:** rather than a separate always-on dispatcher skill, this repo's routing now lives as a **Skill Map** in `td-general` (intent → skill + phase, one bullet per skill), with `validate.py` enforcing map↔skills sync (every distributed skill has an entry; no stale entries). This delivers routing + phase discipline portably — it rides every host's native discovery, needs no always-on skill, and can't drift. A separate Claude-Code dispatcher adapter is therefore **not needed as a baseline**; it stays an option only if the personal set's disambiguation-heavy routing (4-way GLSL, script split) is later ported.
+
 ## Proposed migration path (phased, low-risk)
 
 1. **Net-new builder skills first** — `td-cpp-chop`, `td-ui-builder`, `td-network-builder`, `td-script-{chop,dat,sop}`, `td-python-module`, `td-param-lookup`. Additive, no conflict with existing skills. Run `validate.py` per skill.
 2. **GLSL** — land the 4-way split as new skills; deprecate/redirect `td-glsl-shaders`. Maintainer decision on split-vs-merge gates this step.
-3. **Per-skill content merges** — fold the production gotchas into the 8 shared skills where A is stronger (top/pop/dat/mat/geometry-instancing/python-extension/build-planning/network-cleanup), preserving main's `td-chill` framing and the `td-node-layout` Y=0 rule.
+3. **Per-skill content merges** — fold the production gotchas into the 8 shared skills where A is stronger (top/pop/dat/mat/geometry-instancing/python-extension/build-planning/network-cleanup), preserving main's `td-chill` framing and the `td-node-layout` Y=0 rule. **Done on `darien`** — 8 universal nuggets back-ported (see git log).
 4. **Tooling** — optionally adopt the production `td-learn` validator/CI stack (`validate_all.py`, `routing_test.py`, graph emitter) as contributor-side infrastructure.
 5. **Neutrality + contract pass** — `validate.py` green across all migrated skills; adapt subfolder layout and wikilinks to the portable contract.
-6. **Dispatcher adapter (opt-in)** — package the dispatcher `SKILL.md` (routing table, phase-gating, disambiguation) as a Claude-Code-only layer over the flat skills, registered like the existing plugin adapter. Flat skills stay canonical; the dispatcher is additive. See "Architecture: dispatcher vs flat".
+6. **Routing — done on `darien` via the Skill Map, not a separate dispatcher.** Native routing lives in `td-general`'s Skill Map (intent → skill + phase), enforced by `validate.py`. Portable, no always-on skill, can't drift. A separate Claude-Code dispatcher adapter is optional and only justified if the personal set's disambiguation-heavy routing is ported — not needed for the current 18-skill, merged-GLSL repo. See "Architecture: dispatcher vs flat".
 
 ## Bottom line
 
