@@ -34,9 +34,6 @@ versions are tracked in `VERSION` and the Claude plugin manifests.
     `StorageManager`, dependable state)
   - `td-build-planning` — `build_network` baseCOMP connection-order `IndexError`
   - `td-network-cleanup` — Titletext vs Bodytext annotation split
-- `plan/skillset-migration-proposal.md` — maintainer-facing audit of the
-  production skillset vs this repo (per-skill verdicts, dispatcher-vs-flat
-  analysis, phased migration path).
 - `CHANGELOG.md` — this file.
 
 ### Changed
