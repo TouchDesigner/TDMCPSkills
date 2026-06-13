@@ -21,7 +21,7 @@ It is intentionally two-sided: the production set wins most comparisons, but `ma
 | Deep content | `references/` + `examples/` **subfolders** (load-on-demand, many small files) | Single flat `reference.md` / `examples.md` per skill |
 | GLSL | **4 skills**: `td-glsl-{tops,compute,materials,pops}` (~68 KB / 27 files) | **1 merged** `td-glsl-shaders` (~14 KB / 3 files) |
 | Cross-refs | `[[skill-name]]` wikilinks, dispatcher-resolved | none |
-| Tooling | log hook, session analyzer, `validate_all.py`, `routing_test.py` (30 assertions), graph emitter, budget enforcer w/ exceptions | `validate.py` (portable contract) + report-only `skill_stats.py` |
+| Tooling | log hook, session analyzer, `validate_all.py`, `routing_test.py` (30 assertions), graph emitter, budget enforcer w/ exceptions | `validate.py` (portable contract); no contributor learn-tooling |
 
 ## Methodology
 
@@ -52,7 +52,7 @@ These have no equivalent in `main` and represent the bulk of the migration value
 
 > The 4 GLSL skills collectively **replace and far exceed** the repo's single merged `td-glsl-shaders`. As discrete skills they are net-new; as coverage they close real gaps (compute workgroup math, POP topology API, Copy POP, picking, worked examples).
 
-Plus migration-grade infrastructure (contributor side): the production `td-learn` ships a full observability + CI stack (session log hook, analyzer, structural validator, routing-test harness, dependency-graph emitter, budget enforcer) vs the repo's report-only `skill_stats.py`.
+Plus migration-grade infrastructure (contributor side): the production `td-learn` ships a full observability + CI stack (session log hook, analyzer, structural validator, routing-test harness, dependency-graph emitter, budget enforcer); the repo ships no equivalent (its contributor `td-learn` was removed as out-of-scope for the public distribution). Note: the production stack's session-logging hook is exactly the kind of advanced setup the repo intentionally avoids — any port must keep it opt-in.
 
 ## Per-skill quality comparison — 18 shared skills
 
@@ -73,7 +73,7 @@ Plus migration-grade infrastructure (contributor side): the production `td-learn
 | td-geometry-instancing | **A** | +direct-POP instancing path (B forces poptoCHOP → needless GPU→CPU per build) |
 | td-python-extension | **A** | +`TDF.createProperty`, `StorageManager`, dependable state (13 vs 3 refs) |
 | td-lister-ui | Tie | Reference files identical |
-| td-learn | **A** | Full observability + CI stack vs report-only script |
+| td-learn | **A** | Production has a full observability + CI stack; repo ships none (contributor `td-learn` removed) |
 | td-skills-local | Tie | Functionally identical |
 | **GLSL** (1 vs 4) | **A** | ~68 KB/27 files vs 14 KB/3; B's merge surface-level on compute/materials/pops, no examples |
 

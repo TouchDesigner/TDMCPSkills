@@ -15,7 +15,6 @@ Skills for the TouchDesigner MCP server. Each skill teaches Claude how to work w
 3. **Build** — execute using builder skills (td-top-family, td-chop-family, td-glsl-shaders, etc.)
 4. **Review** — load `td-review-network` skill, check errors, verify wiring
 5. **Cleanup** — always run `td-network-cleanup` skill after builds, align layout, annotate
-6. **Learn** — run `/td-learn` to analyze session tool usage and update skills
 
 ## Guidelines
 

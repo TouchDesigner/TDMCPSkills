@@ -31,7 +31,6 @@ DESCRIPTION_MAX = 1024
 # Each entry: (compiled pattern, human-readable reason)
 PROVIDER_PATTERNS = [
     (re.compile(r"\bClaude\b"), "references Claude — use 'agent' or 'host'"),
-    (re.compile(r"/td-learn\b"), "references contributor-only /td-learn command"),
     (re.compile(r"\.claude/"), "references Claude-specific path"),
     (re.compile(r"\.codex/"), "references Codex-specific path"),
     (re.compile(r"\.gemini/"), "references Gemini-specific path"),

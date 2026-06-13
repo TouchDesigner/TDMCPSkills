@@ -46,7 +46,6 @@ Each skill is a directory containing:
 
 Not distributed via plugin or `install.py`. Live in `.claude/skills/` and auto-load only when Claude Code is working in a clone of this repo.
 
-- **`td-learn`** — Review conversation, audit skills, propose updates (for skill authors)
 - **`td-skills-local`** — Project-local install helper (legacy; superseded by plugin install)
 
 ## Build Order
