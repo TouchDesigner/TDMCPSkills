@@ -21,11 +21,10 @@ It is intentionally two-sided: the production set wins most comparisons, but `ma
 | Deep content | `references/` + `examples/` **subfolders** (load-on-demand, many small files) | Single flat `reference.md` / `examples.md` per skill |
 | GLSL | **4 skills**: `td-glsl-{tops,compute,materials,pops}` (~68 KB / 27 files) | **1 merged** `td-glsl-shaders` (~14 KB / 3 files) |
 | Cross-refs | `[[skill-name]]` wikilinks, dispatcher-resolved | none |
-| Tooling | log hook, session analyzer, `validate_all.py`, `routing_test.py` (30 assertions), graph emitter, budget enforcer w/ exceptions | `validate.py` (portable contract); no contributor learn-tooling |
 
 ## Methodology
 
-Per-skill content audit via parallel subagents, one comparison unit per skill pair, each reporting what either side has that the other lacks plus a stronger-side verdict on accuracy / actionable depth / pitfall coverage / token economics. 18 shared-name skills + the GLSL reorg were compared file-by-file. Findings below.
+Per-skill content audit via parallel subagents, one comparison unit per skill pair, each reporting what either side has that the other lacks plus a stronger-side verdict on accuracy / actionable depth / pitfall coverage / token economics. 17 shared-name skills + the GLSL reorg were compared file-by-file. Findings below.
 
 ## Headline
 
@@ -52,9 +51,7 @@ These have no equivalent in `main` and represent the bulk of the migration value
 
 > The 4 GLSL skills collectively **replace and far exceed** the repo's single merged `td-glsl-shaders`. As discrete skills they are net-new; as coverage they close real gaps (compute workgroup math, POP topology API, Copy POP, picking, worked examples).
 
-Plus migration-grade infrastructure (contributor side): the production `td-learn` ships a full observability + CI stack (session log hook, analyzer, structural validator, routing-test harness, dependency-graph emitter, budget enforcer); the repo ships no equivalent (its contributor `td-learn` was removed as out-of-scope for the public distribution). Note: the production stack's session-logging hook is exactly the kind of advanced setup the repo intentionally avoids — any port must keep it opt-in.
-
-## Per-skill quality comparison — 18 shared skills
+## Per-skill quality comparison — 17 shared skills
 
 | Skill | Stronger | Decisive difference |
 |---|---|---|
@@ -73,7 +70,6 @@ Plus migration-grade infrastructure (contributor side): the production `td-learn
 | td-geometry-instancing | **A** | +direct-POP instancing path (B forces poptoCHOP → needless GPU→CPU per build) |
 | td-python-extension | **A** | +`TDF.createProperty`, `StorageManager`, dependable state (13 vs 3 refs) |
 | td-lister-ui | Tie | Reference files identical |
-| td-learn | **A** | Production has a full observability + CI stack; repo ships none (contributor `td-learn` removed) |
 | td-skills-local | Tie | Functionally identical |
 | **GLSL** (1 vs 4) | **A** | ~68 KB/27 files vs 14 KB/3; B's merge surface-level on compute/materials/pops, no examples |
 
@@ -129,9 +125,8 @@ A Claude Code user installs the dispatcher → gets explicit routing + phase-gat
 1. **Net-new builder skills first** — `td-cpp-chop`, `td-ui-builder`, `td-network-builder`, `td-script-{chop,dat,sop}`, `td-python-module`, `td-param-lookup`. Additive, no conflict with existing skills. Run `validate.py` per skill.
 2. **GLSL** — land the 4-way split as new skills; deprecate/redirect `td-glsl-shaders`. Maintainer decision on split-vs-merge gates this step.
 3. **Per-skill content merges** — fold the production gotchas into the 8 shared skills where A is stronger (top/pop/dat/mat/geometry-instancing/python-extension/build-planning/network-cleanup), preserving main's `td-chill` framing and the `td-node-layout` Y=0 rule. **Done on `darien`** — 8 universal nuggets back-ported (see git log).
-4. **Tooling** — optionally adopt the production `td-learn` validator/CI stack (`validate_all.py`, `routing_test.py`, graph emitter) as contributor-side infrastructure.
-5. **Neutrality + contract pass** — `validate.py` green across all migrated skills; adapt subfolder layout and wikilinks to the portable contract.
-6. **Routing — done on `darien` via the Skill Map, not a separate dispatcher.** Native routing lives in `td-general`'s Skill Map (intent → skill + phase), enforced by `validate.py`. Portable, no always-on skill, can't drift. A separate Claude-Code dispatcher adapter is optional and only justified if the personal set's disambiguation-heavy routing is ported — not needed for the current 18-skill, merged-GLSL repo. See "Architecture: dispatcher vs flat".
+4. **Neutrality + contract pass** — `validate.py` green across all migrated skills; adapt subfolder layout and wikilinks to the portable contract.
+5. **Routing — done on `darien` via the Skill Map, not a separate dispatcher.** Native routing lives in `td-general`'s Skill Map (intent → skill + phase), enforced by `validate.py`. Portable, no always-on skill, can't drift. A separate Claude-Code dispatcher adapter is optional and only justified if the personal set's disambiguation-heavy routing is ported — not needed for the current 18-skill, merged-GLSL repo. See "Architecture: dispatcher vs flat".
 
 ## Bottom line
 
