@@ -169,8 +169,12 @@ def main():
     for skill_dir in skill_dirs:
         validate_skill(skill_dir, errors)
 
-    # Non-prefixed directories are not distributed — flag them
-    strays = [d.name for d in skills_root.iterdir() if d.is_dir() and not d.name.startswith(SKILL_PREFIX)]
+    # Non-prefixed directories are not distributed — flag them.
+    # Hidden/dot dirs (.claude, .git, tool/OS artifacts) are not skill attempts — ignore them.
+    strays = [
+        d.name for d in skills_root.iterdir()
+        if d.is_dir() and not d.name.startswith(SKILL_PREFIX) and not d.name.startswith(".")
+    ]
     for stray in strays:
         errors.append(f"skills/{stray}: directory lacks required '{SKILL_PREFIX}' prefix")
 
