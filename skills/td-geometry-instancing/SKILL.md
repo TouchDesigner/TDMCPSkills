@@ -14,9 +14,10 @@ Render one piece of geometry many times with per-instance transforms, colors, an
 - **tableDAT** — static/hand-authored. Set `instancefirstrow=names`
 - **CHOP** — animated/procedural (LFO, noise, soptoCHOP). Most common
 - **TOP** — texture-driven, large instance counts
-- **POP (via poptoCHOP)** — particle-driven. GPU→CPU cost
+- **POP — directly** (preferred) — point a transform source OP at a `nullPOP` and reference point attributes with `P(0)/P(1)/P(2)` (position), `attrib_name(i)`, etc. No `poptoCHOP` round-trip, no GPU→CPU cost. e.g. `instancetop=null_positions`, `instancetx=P(0)`, `instancety=P(1)`, `instancetz=P(2)`
+- **POP via poptoCHOP** — only when you need the data as CHOP channels for other ops. GPU→CPU cost
 
-Split sources: `instancetop` (translate), `instancerop` (rotate), `instancesop` (scale). `instanceop` is the default fallback.
+Split sources: `instancetop` (translate), `instancerop` (rotate), `instancesop` (scale). `instanceop` is the default fallback. Each accepts a POP directly — use `P(n)`/attrib syntax in the channel selectors.
 
 ## Core Parameters
 
@@ -66,7 +67,8 @@ Changing `instrord` changes which formula is correct. Use `functionCHOP(atan2)` 
 
 - **Static** — tableDAT → `instanceop`, `instancefirstrow=names`
 - **Animated** — lfoCHOP → mathCHOP → nullCHOP → `instanceop`
-- **POP-driven** — POP → nullPOP → poptoCHOP → nullCHOP → `instanceop`
+- **POP-driven (direct)** — POP → nullPOP → `instancetop`/`instanceop`, channels `P(0)/P(1)/P(2)`. No poptoCHOP
+- **POP-driven (CHOP)** — POP → nullPOP → poptoCHOP → nullCHOP → `instanceop` (only if channels needed elsewhere)
 - **TOP-driven** — noiseTOP → `instanceop`, pixel data drives transforms
 
 ## Pitfalls

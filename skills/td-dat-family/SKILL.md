@@ -35,8 +35,9 @@ Each callback DAT has a dedicated **source-reference par** that must be set. Wit
 ### parameterexecuteDAT
 Routes parameter changes to handlers. Standard setup:
 - `op` par = `..` (parent COMP)
-- `pars` = `*` (all custom pars)
+- `pars` = `*` (all custom pars) — a glob pattern, not a list. Empty `pars` watches nothing (silently inert)
 - `builtin` = False
+- **Fires NEXT cook** — a pulse handled here is observable the following tick; same-tick reads of the result miss it
 
 Key callbacks:
 ```python

@@ -44,6 +44,20 @@ Extension reacts to custom parameter changes via `parameterexecuteDAT`:
 
 Use `onInitTD` when depending on other components' extensions being ready.
 
+## State & Persistence
+
+- **State lives on `self`** — never on module globals. Module globals re-execute on reinit and lose state
+- **`TDF.createProperty`** (from `import TDFunctions as TDF`) for reactive/dependable state — list/panel callbacks reading `ext.PropertyName` auto-recook on change. Plain `self.x = ...` does NOT trigger downstream recooks. e.g. `TDF.createProperty(self, 'MyProperty', value=0, dependable=True, readOnly=False)`
+- **`StorageManager`** (from `from TDStoreTools import StorageManager`) for persistence across saves:
+
+```python
+storedItems = [
+    {'name': 'History', 'default': [], 'readOnly': False,
+     'property': True, 'dependable': True},
+]
+self.stored = StorageManager(self, ownerComp, storedItems)
+```
+
 ## scriptTOP + numpy
 
 `copyNumpyArray()` **must** run inside `onCook` — calling it elsewhere raises `tdError`.

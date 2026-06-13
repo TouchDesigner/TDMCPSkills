@@ -34,9 +34,10 @@ Organize operator networks into clean, readable layouts. Only moves, resizes, co
 Follow `td-node-layout` skill for spacing, alignment, and sizing formulas. Additional cleanup-specific rules:
 
 - Use `annotation` tool with `parent_path`, `comment`, `nodeX`, `nodeY`, `width`, `height`, `color` (RGB array 0-1)
+- **`comment` writes `Titletext` ONLY** — the heading; it never touches the body. For any explanation longer than a heading, follow up with `set_parameters` on the annotateCOMP: `Titletext` = short heading, `Bodytext` = the explanation. Body pars: `Bodyfontsize` (def 10), `Bodywordwrap` (def on), `Bodylimitwidth`/`Bodymaxwidth`. Batch in one `set_parameters` call
 - Compute bounds from actual `nodeWidth`/`nodeHeight` — never guess
 - Every functional group gets an annotation, even small ones
-- **Short titles** — single words or very short phrases (e.g. "Render", "Data Select", "Material"). Long descriptions become unreadable when the annotation is small because the font scales down
+- **Short titles, body for detail** — `Titletext` = single word / short phrase ("Render", "Data Select"). Put explanatory sentences in `Bodytext`, never the title (font scales down → long titles unreadable)
 - **Colors**: muted backgrounds (~0.25–0.35 range) — blue-gray `[0.25, 0.28, 0.35]`, green `[0.22, 0.33, 0.22]`, purple `[0.30, 0.22, 0.33]`, amber `[0.35, 0.30, 0.18]`
 - **Stacked alignment** — after computing per-group bounds, unify X and width across all stacked annotations. All should share left edge and width for a clean column
 
@@ -51,6 +52,7 @@ Load the `td-node-layout` skill for full positioning rules (spacing, flow direct
 ## Pitfalls
 
 - **Annotations are properties not parameters** — `nodeX`, `nodeY`, `nodeWidth`, `nodeHeight` must be set via `execute_code`, not `set_parameters`
+- **Text dumped in the title** — `annotation(comment=...)` sets `Titletext` only; explanation must go in `Bodytext` via `set_parameters` (see Annotation Rules)
 - **Forgetting to delete old annotations** — leftover `annotateCOMP` ops overlap with new ones
 - **Not verifying containment** — after creating annotations, check all ops are inside the box and below the header
 - **Insufficient vertical spacing** — minimum ~105px Y gap between last op in one group and first op in the next (25px bottom padding + 20px gap + 60px top padding)
