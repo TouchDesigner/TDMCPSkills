@@ -29,9 +29,10 @@ Each skill is a directory containing:
 - **`td-python-extension`** — Extension classes, ext0object, parameter callbacks, scriptTOP/numpy
 - **`td-geometry-instancing`** — geometryCOMP instance setup, data sources (CHOP/DAT/TOP/POP), transforms, textures
 
-### Cross-Cutting Skills (3)
+### Cross-Cutting Skills (4)
 
 - **`td-general`** — Workflow phases, naming, paths, tool preferences, universal pitfalls. Load first on any TD task
+- **`td-chill`** — Collaborative reminder—you're a thinking partner, not a builder. Load when the pace gets hectic or you need to reset the frame
 - **`td-node-layout`** — Network layout conventions: spacing, flow, positioning
 - **`td-performance-check`** — Selective cooking, GPU vs CPU, time patterns
 

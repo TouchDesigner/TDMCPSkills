@@ -35,14 +35,26 @@ REPORT_LINE = (
 TESTS = [
     {
         "n": 1,
-        "title": "TOP chain",
-        "skills": ["td-top-family"],
+        "title": "TOP chain with parameters and data table",
+        "skills": ["td-top-family", "td-dat-family"],
         "mode": None,
         "steps": [
             "In /project1/{lab} build a TOP chain with build_network: "
-            "noise → blur → level → null. 175px horizontal spacing.",
-            "Verify: get_errors on /project1/{lab}, then inspect_values on the "
-            "final null (sample_grid=8).",
+            "noise_source → blur_soften → level_adjust → null_output. "
+            "175px horizontal spacing, chain at Y=0.",
+            "Set parameters (call get_help for all operator types first, in one "
+            "batched call): noise_source resolution 512x512 and monochrome off; "
+            "blur_soften sample step 7 in x and y; level_adjust input low 0.5.",
+            "Create a tableDAT named table_data at the same X as noise_source, "
+            "200px below the chain. Fill it with set_dat_content: heading row "
+            "'pars | values', then rows 'seed | 4' and 'amp | 2'. The table is "
+            "standalone data — do not wire or reference it.",
+            "Verify: get_errors on /project1/{lab} is clean; inspect_values on "
+            "null_output (sample_grid=8) shows non-monochrome noise; "
+            "get_dat_content on table_data matches the spec exactly; "
+            "get_parameters confirms every value set above.",
+            "PASS requires: all five ops exist with the names above, every "
+            "parameter and table cell verified at its specified value, zero errors.",
         ],
     },
     {
