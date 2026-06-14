@@ -8,11 +8,17 @@ versions are tracked in `VERSION` and the Claude plugin manifests.
 
 ## [Unreleased]
 
+## [1.2.1] - 2026-06-14
+
 ### Removed
 - `td-learn` contributor skill (`.claude/skills/td-learn/` + `skill_stats.py`) and
   all references (README, SKILLS.md, CLAUDE.md workflow, `validate.py` guard) —
   out of scope for the public distribution; it was contributor-only tooling.
   Skill-size budgeting stays a manual `CLAUDE.md` guideline.
+
+### Fixed
+- Ignore tool-created `skills/.claude/` analytics logs so the canonical skills
+  source stays adapter-free (`.gitignore`).
 
 ## [1.2.0] - 2026-06-13
 
