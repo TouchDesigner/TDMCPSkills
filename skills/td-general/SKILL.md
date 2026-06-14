@@ -107,6 +107,14 @@ Ambiguous intent → ask which applies before loading. Multi-domain builds → l
 - Use `pattern`/`names` filters instead of `include_defaults`
 - Empty filtered result = your name guess was wrong, not a missing parameter — re-run `get_help` unfiltered and match by label (blurTOP blur amount = `size`, label "Filter Size")
 
+## Get Docs
+
+- `get_help` = live **parameter** names/menus; `get_docs` = TD **Python API** + **concept** articles — reach for the right one
+- `get_docs(query=optype, kind=python)` before `execute_code` against an unfamiliar TD Python method/member — never guess API names
+- `get_docs(query=..., kind=concept)` for conceptual operator articles beyond `get_help` parameters
+- Drill into a `section` (`get_docs(page="TOP_Class", section="Members")`) — class pages inline the full inheritance (~10K tokens); don't pull whole pages
+- `sections_available` in the response tells you what you can drill into next
+
 ## Universal Gotchas
 
 - **`viewer=true`** on every operator at create time
