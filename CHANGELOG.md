@@ -8,6 +8,11 @@ versions are tracked in `VERSION` and the Claude plugin manifests.
 
 ## [Unreleased]
 
+### Added
+- `td-glsl-shaders` — document the glslTOP/glslMAT **Colors** page (`color0name` +
+  `color0rgbr/g/b` + `color0alpha`) for `vec4` color uniforms, distinct from the
+  Vectors page; note the **Samplers**/**Arrays** pages alongside it.
+
 ## [1.2.2] - 2026-06-16
 
 Merges the `darien` 1.2.0/1.2.1 release work with the `td-chill` → `td-colab`

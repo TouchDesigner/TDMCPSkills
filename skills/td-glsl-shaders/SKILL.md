@@ -42,6 +42,8 @@ Up to 32 uniform vectors via operator parameters (`vec0name`, `vec0valuex`, etc.
 
 **TOP/MAT**: uniforms are NOT auto-declared. Setting `vec0name=uTime` does nothing unless the shader has `uniform float uTime;`. TD infers the type from the GLSL declaration.
 
+**Color uniforms → Colors page (TOP/MAT)**: for a `uniform vec4` color, use the **Colors** sequence (`color0name` + `color0rgbr/g/b` + `color0alpha`) instead of the Vectors page — a 4-component RGBA uniform with a color-picker swatch. Same rule: type is inferred from the GLSL declaration, so declare `uniform vec4 uName;` or it reads zero. (Samplers live on the **Samplers** page, fixed arrays on **Arrays**.)
+
 **POP (glslPOP/glslcopyPOP)**: uniforms ARE auto-declared as `float`. Do NOT redeclare them — causes "Redeclaration" compile error. Cannot override the type to `vec3` etc.; use constants or sampler inputs for multi-component data.
 
 To use N uniforms, first set the sequence block count, then access `vec0name`, `vec1name`, etc.
