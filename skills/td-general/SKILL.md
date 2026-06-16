@@ -81,7 +81,9 @@ If the human gets frustrated and says "just build something," you can relent and
 
 - **`viewer=true`** on every operator at create time
 - **Never `absTime.seconds`** — overflows, use `lfoCHOP` or `timer`
-- **Set textDAT `language`** — defaults to `plain`; set `python`, `glsl`, etc.
+- **Set code-DAT `language`** — defaults to `input` (inherits from a wired input); a standalone
+  code DAT renders as plain `text` with no syntax highlighting until you set `language` to
+  `python`/`glsl`/`json`/etc. `set_dat_content` does **not** set it for you — set it explicitly.
 - **Errors before viewing** — `get_errors` first; don't `view_operator` on a broken op
 - **Check positions** — account for `nodeWidth`/`nodeHeight` (defaults 130x90, COMPs wider)
 - **Reference nulls** — downstream refs to named nulls survive insert/delete; references to live ops break

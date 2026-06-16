@@ -20,14 +20,17 @@ Custom GPU shaders in TouchDesigner. Three contexts: TOP (image processing), MAT
 
 ## Docked DAT Pattern (glslTOP/glslmultiTOP)
 
-Creating a glslmultiTOP auto-creates docked DATs: `<name>_pixel`, `<name>_compute`, `<name>_info`.
+Creating a glslmultiTOP auto-docks `<name>_pixel`, `<name>_compute`, `<name>_info` and auto-wires
+`pixeldat` to `<name>_pixel`.
 
-1. Create glslmultiTOP
-2. Rename pixel DAT: `glsl_<shader>_pixel`
-3. Delete unused mode DAT (compute for pixel shaders)
-4. Update `pixeldat` to renamed DAT
-5. Write shader code to the renamed DAT
-6. Keep `<name>_info` for error visibility
+**Name the TOP at creation** (`glsl_<shader>`) so the docks inherit the prefix
+(`glsl_<shader>_pixel`, …) and `pixeldat` is already correct — no rename, no repoint. (Docked refs
+snapshot at creation; renaming the TOP later does NOT follow them.)
+
+1. Create the glslmultiTOP with its final name `glsl_<shader>`.
+2. Delete the unused mode dock (`_compute` for a pixel shader).
+3. Write/sync the shader into `<name>_pixel` (already wired to `pixeldat`).
+4. Keep `<name>_info` for compile-error visibility.
 
 **glslPOP/glslcopyPOP**: always write shaders into the auto-docked DATs (`<name>_compute`, `<name>_ptCompute`). Never create separate textDATs for POP shaders. Delete unused docked DATs (e.g. `_vertCompute`, `_primCompute` if not writing vert/prim shaders).
 
@@ -68,12 +71,15 @@ constantTOP (clear) → feedbackTOP → glslmultiTOP → nullTOP. feedbackTOP `t
 
 ## Sync to File
 
-GLSL shader DATs should be synced to disk following the project file convention:
-- Path: `src/glsl/<comp>/<subcomp>/<dat_name>.glsl`
-- Example: `/project1/MyEffect/glsl_raymarch_pixel` → `src/glsl/MyEffect/glsl_raymarch_pixel.glsl`
-- Set `file` parameter to the relative path, `syncfile=true`, `language=glsl`
+Sync the pixel DAT to disk — the fast way to author: edit the `.glsl` on disk, TD recompiles.
+- One `set_dat_content(file_content, file_path, file_type='glsl')` call writes the file and sets
+  `file`/`syncfile`. The auto-docked pixel DAT already has `language=glsl`; a textDAT you create
+  yourself needs `language=glsl` set (`set_dat_content` doesn't set it).
+- Path: `code/glsl/<comp>/<subcomp>/<dat_name>.glsl`
+  (e.g. `/project1/MyEffect/glsl_raymarch_pixel` → `code/glsl/MyEffect/glsl_raymarch_pixel.glsl`)
+- Once synced, **edit on disk** — don't round-trip through the DAT.
 
-See the `td-dat-family` skill for full sync details.
+See the `td-dat-family` skill for the full canonical flow.
 
 ## Pitfalls
 

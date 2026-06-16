@@ -61,21 +61,57 @@ Fires when referenced DAT content changes.
 
 ## Sync to File
 
-For any DAT containing code (Python, GLSL), sync to disk:
-- Set `file` parameter to relative path from .toe file
-- Set `syncfile=true`
-- Set `language` to match content
-- Code on disk, not embedded in .toe — enables version control and external editing
+Any DAT containing code (Python, GLSL) should live on disk, not embedded in the `.toe`.
+This enables version control and external editing — and it's the fastest way to author:
+write in your editor, TD live-reloads. This is the agent's strong zone (text on disk),
+so route code here rather than editing inside the DAT.
+
+**Do it in one call.** `set_dat_content(path, file_content, file_path, file_type)` writes the
+file, sets `file` + `syncfile=true`, and creates missing folders — atomically. Don't set
+`file`/`syncfile` by hand; that's the slow path.
+
+```
+set_dat_content(
+  path="/project1/MyEffect/glsl_raymarch_pixel",
+  file_content="<source>",
+  file_path="code/glsl/MyEffect/glsl_raymarch_pixel.glsl",
+  file_type="glsl",   # 'glsl' | 'py' | 'dat'
+)
+```
+
+- **Set `language` yourself — `set_dat_content` does NOT.** A code DAT you create with
+  `create(textDAT)` defaults to `language=input` and renders as plain `text`: no syntax
+  highlighting, and TD won't parse it as code. Set `language` to match the content (`python`,
+  `glsl`, `json`, `yaml`, `xml`, …) right after syncing. (Auto-docked DATs — glsl `*_pixel`,
+  `*_callbacks` — already have it set by their parent op; hand-created ones don't.) The sibling
+  `extension` par ("Edit/View Extension") sets the external-editor file type; leaving it at
+  `languageext` derives it from `language`, so usually only `language` needs setting.
+- **Always pass an explicit `file_path`.** Omit it and the server auto-derives the path
+  from the live op path — convenient until a rename/move silently forks to a new file
+  and orphans the old one.
+- **After the first sync, edit on disk.** TD live-reloads with no MCP touch: GLSL
+  recompiles, Python extensions auto-re-init. Re-init runs `__init__`, so **in-memory
+  extension state is wiped** — the one thing to watch.
+
+### Standard flow
+
+1. **Create the op with its final name.** Docked DATs and `file`/`pixeldat` references are
+   resolved at creation and are static snapshots — a later rename does NOT follow them.
+2. **Harvest the boilerplate.** glslTOP/glslmultiTOP auto-dock a DAT with known-good
+   starter code — sync that instead of authoring from scratch. (baseCOMP extensions have no
+   auto-dock: the Component Editor harvests TD's template, but bare `create(textDAT)` gives an
+   empty DAT — see `td-python-extension` for the skeleton to author.)
+3. **Sync to disk** — one `set_dat_content` call (above), then **set `language`** to match
+   the code (it isn't set for you).
+4. **Edit on disk** — your editor is now the source of truth; TD syncs along.
 
 ### File Path Convention
 
-External files mirror the TD operator hierarchy under `src/`:
-- **Python**: `src/py/<comp>/<subcomp>/<dat_name>.py`
-- **GLSL**: `src/glsl/<comp>/<subcomp>/<dat_name>.glsl`
+External files mirror the TD operator hierarchy under `code/`, relative to the `.toe`:
+- **Python**: `code/py/<comp>/<subcomp>/<dat_name>.py`
+- **GLSL**: `code/glsl/<comp>/<subcomp>/<dat_name>.glsl`
 
-Example: `/project1/MyEffect/scripts/helper` → `src/py/MyEffect/scripts/helper.py`
-
-The `file` parameter on the DAT uses the same relative path from the .toe file.
+Example: `/project1/MyEffect/scripts/helper` → `code/py/MyEffect/scripts/helper.py`
 
 ## Pitfalls
 
