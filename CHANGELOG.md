@@ -8,8 +8,6 @@ versions are tracked in `VERSION` and the Claude plugin manifests.
 
 ## [Unreleased]
 
-## [1.2.3] - 2026-06-16
-
 ### Added
 - **`td-working-mode`** — new cross-cutting posture skill: capability routing
   (text/code-on-disk + empirical verification vs. blind spatial node-building), the
