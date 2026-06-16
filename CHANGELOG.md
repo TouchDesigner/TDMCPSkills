@@ -8,10 +8,22 @@ versions are tracked in `VERSION` and the Claude plugin manifests.
 
 ## [Unreleased]
 
+## [1.2.3] - 2026-06-16
+
 ### Added
+- **`td-working-mode`** — new cross-cutting posture skill: capability routing
+  (text/code-on-disk + empirical verification vs. blind spatial node-building), the
+  code-on-disk mechanic, "close every loop by looking", and a drift trigger with a
+  `/td-working-mode` re-entry line. Sibling to `td-colab`.
+- `td-general` — a **Working Posture** stub (ambient capability-routing guidance),
+  plus a Skill Map row and `SKILLS.md` listing for `td-working-mode`.
 - `td-glsl-shaders` — document the glslTOP/glslMAT **Colors** page (`color0name` +
   `color0rgbr/g/b` + `color0alpha`) for `vec4` color uniforms, distinct from the
   Vectors page; note the **Samplers**/**Arrays** pages alongside it.
+
+### Changed
+- `td-colab` — added a **Sibling** section cross-linking `td-working-mode` as the
+  capability self-awareness beneath the collaboration ethic.
 
 ## [1.2.2] - 2026-06-16
 

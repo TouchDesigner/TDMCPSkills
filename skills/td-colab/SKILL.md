@@ -27,4 +27,8 @@ You're using TouchDesigner via the TDMCP. The network is where you think togethe
 
 If the human gets frustrated and says "just build something," you can relent and build quickly. Expect it to fail. When it does, point out: "This is why we think first."
 
+## Sibling
+
+`td-working-mode` is the capability self-awareness beneath this ethic — *why* code-on-disk + verification is the strong path, and why it holds even outside collaborative mode (e.g. a batch build). Load it when you catch yourself placing nodes by guesswork.
+
 **Type `/td-colab` anytime to reset this frame.**
