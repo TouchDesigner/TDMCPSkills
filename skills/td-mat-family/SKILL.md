@@ -1,6 +1,6 @@
 ---
 name: td-mat-family
-description: Materials — constantMAT, pbrMAT, pointspriteMAT, glslMAT, placement, blending. Use when assigning or creating materials for rendering.
+description: Materials — constantMAT, pbrMAT, pointspriteMAT, glslMAT, lineMAT, placement, blending. Use when assigning or creating materials for rendering.
 ---
 
 # Materials
@@ -14,6 +14,7 @@ Materials control how geometry appears when rendered by a renderTOP.
 - **pbrMAT** — physically based rendering. Metallic/roughness workflow, environment maps. Requires environmentlightCOMP with map TOP (see PBR Setup below)
 - **pointspriteMAT** — renders points as camera-facing quads with configurable size. Essential for particle rendering
 - **glslMAT** — custom GLSL vertex/pixel shaders. Full control. Load `td-glsl-shaders` skill for shader code
+- **lineMAT** — renders line primitives (proximityPOP/linePOP graphs, edges). Per-line color, pixel or world width
 - **wirePOP** — wireframe rendering via material wireframe toggle
 
 ## When to Use What
@@ -74,3 +75,5 @@ Layout follows the GLSL DAT sandwich pattern (see `td-node-layout` skill). Load 
 - **pbrMAT `metallic` defaults to 1** — must explicitly set `metallic=0` for non-metallic surfaces, otherwise geometry looks like chrome
 - **pbrMAT reads vertex Tex, not point Tex** — glslPOP writes point attributes, but pbrMAT samples `basecolormap` from vertex Tex coords. Use `attributeconvertPOP` (`convertop=pointtovert`) to convert. See `td-pop-family` skill
 - **glslMAT on POPs: `Cd`/`N` silent failure** — referencing `Cd` or `N` as vertex attributes silently kills rendering (geometry vanishes, no errors). Use `TDPointColor()` for vertex color, derive normals via `dFdx/dFdy(worldPos)` in fragment shader
+- **lineMAT per-line color** — `linecoloratt='Color'` reads per-primitive `Color` (RGBA incl alpha). Without it, lines use flat `colorr/g/b`
+- **lineMAT width vanishes under normalized camera** — `widthaffectedbyfov=ON` scales width with orthowidth; normalizing the cam (orthowidth 1920→1.0) makes lines sub-pixel/invisible. Fixed-resolution output: `widthaffectedbyfov=OFF` + pixel widths

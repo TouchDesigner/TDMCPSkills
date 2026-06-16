@@ -9,6 +9,7 @@ Checks every skills/td-*/ directory:
 - description is non-empty and within host limits (max 1024 chars)
 - relative links and referenced files (reference.md, examples.md, scripts) resolve
 - no provider-only commands or paths leak into distributed content
+- the td-general Skill Map lists every distributed skill, with no stale rows
 
 Runs without installing anything. Exit code 0 = all skills valid.
 
@@ -30,7 +31,6 @@ DESCRIPTION_MAX = 1024
 # Each entry: (compiled pattern, human-readable reason)
 PROVIDER_PATTERNS = [
     (re.compile(r"\bClaude\b"), "references Claude — use 'agent' or 'host'"),
-    (re.compile(r"/td-learn\b"), "references contributor-only /td-learn command"),
     (re.compile(r"\.claude/"), "references Claude-specific path"),
     (re.compile(r"\.codex/"), "references Codex-specific path"),
     (re.compile(r"\.gemini/"), "references Gemini-specific path"),
@@ -149,6 +149,25 @@ def validate_version_sync(repo, errors):
             errors.append(f"{rel}: version {found!r} does not match VERSION {version!r}")
 
 
+def validate_skill_map(repo, skill_names, errors):
+    """td-general carries the Skill Map (routing table). Enforce it stays in sync:
+    every distributed skill has a row, and no row points to a missing skill."""
+    anchor = repo / "skills" / "td-general" / "SKILL.md"
+    if not anchor.is_file():
+        errors.append("skills/td-general/SKILL.md: missing — required for the Skill Map")
+        return
+    text = anchor.read_text(encoding="utf-8")
+    section = re.search(r"^## Skill Map\b(.*?)(?=^## |\Z)", text, re.DOTALL | re.MULTILINE)
+    if not section:
+        errors.append("skills/td-general/SKILL.md: missing '## Skill Map' routing section")
+        return
+    mapped = set(re.findall(r"td-[a-z0-9]+(?:-[a-z0-9]+)*", section.group(1)))
+    for missing in sorted(set(skill_names) - mapped):
+        errors.append(f"td-general Skill Map: no row for distributed skill {missing!r}")
+    for stale in sorted(mapped - set(skill_names)):
+        errors.append(f"td-general Skill Map: lists {stale!r} which is not a distributed skill")
+
+
 def main():
     repo = Path(__file__).resolve().parent
     skills_root = repo / "skills"
@@ -166,11 +185,17 @@ def main():
 
     errors = []
     validate_version_sync(repo, errors)
+    skill_names = {d.name for d in skill_dirs}
+    validate_skill_map(repo, skill_names, errors)
     for skill_dir in skill_dirs:
         validate_skill(skill_dir, errors)
 
-    # Non-prefixed directories are not distributed — flag them
-    strays = [d.name for d in skills_root.iterdir() if d.is_dir() and not d.name.startswith(SKILL_PREFIX)]
+    # Non-prefixed directories are not distributed — flag them.
+    # Hidden/dot dirs (.claude, .git, tool/OS artifacts) are not skill attempts — ignore them.
+    strays = [
+        d.name for d in skills_root.iterdir()
+        if d.is_dir() and not d.name.startswith(SKILL_PREFIX) and not d.name.startswith(".")
+    ]
     for stray in strays:
         errors.append(f"skills/{stray}: directory lacks required '{SKILL_PREFIX}' prefix")
 

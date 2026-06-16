@@ -170,18 +170,9 @@ git fetch upstream
 git merge upstream/main
 ```
 
-### Contributor skills (`/td-learn`)
+### Contributor skills
 
 Contributor-only skills live in this repo's `.claude/skills/` and auto-load only when Claude Code is working inside a clone of TDMCPSkills. They are **not** distributed via the plugin or `install.py`.
-
-**`/td-learn`** — review a build session and propose skill improvements:
-
-- Flags struggles, stalls, and wrong outcomes from the conversation
-- Audits loaded skills for missing knowledge, contradictions, redundancy
-- Runs a size/token audit across all skills
-- Proposes specific edits to skill files
-
-Run after each build session, commit the proposed improvements on your branch, and reinstall to validate.
 
 **`/td-skills-local`** — legacy helper for installing skills into a specific project's `.claude/skills/`. Mostly superseded by the plugin install path.
 

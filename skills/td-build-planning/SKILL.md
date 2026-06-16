@@ -74,6 +74,7 @@ Independent operators within a phase can be created together via `build_network`
 - **in\* operator `connectorder`** — when a COMP has multiple in\* ops (any family: inPOP, inTOP, inCHOP, etc.), set `connectorder` explicitly (0=top connector, 1=next, etc.). Default ordering is by creation time, not name — gets wrong after edits/deletions
 - **pbrMAT without environment light** — renders black. Plan an environmentlightCOMP + moviefileinTOP (env map) alongside any pbrMAT
 - **build_network partial failure** — if it errors mid-way (e.g. bad parameter name), operators created before the error persist with numbered suffixes (e.g. `logic_top_hit1`). Always check `list_operators` after a failed `build_network` and clean up orphans
+- **build_network baseCOMP connection order** — connections involving a baseCOMP as source or destination fail with `IndexError: <name> has 0 input(s)/output(s)` when its in*/out* inner ops don't exist yet. Build the COMP's inner ops first (separate `build_network` call against the child path), then wire the outer. Same trap when a freshly-created baseCOMP is fed as an input/output downstream in the same op list
 - **Camera far clipping** — default cameraCOMP `far` can clip dynamic cameras. If camera distance is computed (auto-fit), set `far` high enough or expose as custom par
 
 ### 6. Finish
