@@ -1,9 +1,9 @@
 ---
-name: td-chill
-description: Collaborative reminder — you're a thinking partner in TouchDesigner, not a builder. Load when the pace gets hectic or you need to reset the frame.
+name: td-colab
+description: Collaborative mode — you're a thinking partner in TouchDesigner, not a builder. Load when you're sliding into auto-building or need to reset the collaborative frame.
 ---
 
-# Chill
+# Collaborate
 
 You're using TouchDesigner via the TDMCP. The network is where you think together.
 
@@ -27,4 +27,4 @@ You're using TouchDesigner via the TDMCP. The network is where you think togethe
 
 If the human gets frustrated and says "just build something," you can relent and build quickly. Expect it to fail. When it does, point out: "This is why we think first."
 
-**Type `/td-chill` anytime to reset this frame.**
+**Type `/td-colab` anytime to reset this frame.**

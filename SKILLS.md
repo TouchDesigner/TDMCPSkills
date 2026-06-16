@@ -32,7 +32,7 @@ Each skill is a directory containing:
 ### Cross-Cutting Skills (4)
 
 - **`td-general`** — Workflow phases, naming, paths, tool preferences, universal pitfalls. Load first on any TD task
-- **`td-chill`** — Collaborative reminder—you're a thinking partner, not a builder. Load when the pace gets hectic or you need to reset the frame
+- **`td-colab`** — Collaborative mode—you're a thinking partner, not a builder. Load when you're sliding into auto-building or need to reset the frame
 - **`td-node-layout`** — Network layout conventions: spacing, flow, positioning
 - **`td-performance-check`** — Selective cooking, GPU vs CPU, time patterns
 
