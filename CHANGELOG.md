@@ -18,6 +18,9 @@ versions are tracked in `VERSION` and the Claude plugin manifests.
 - `td-glsl-shaders` — document the glslTOP/glslMAT **Colors** page (`color0name` +
   `color0rgbr/g/b` + `color0alpha`) for `vec4` color uniforms, distinct from the
   Vectors page; note the **Samplers**/**Arrays** pages alongside it.
+- `td-pop-family` — two live-verified pitfalls: forceradialPOP `globforcemult`
+  defaults to 0 (Global Force silently inert), and mathmixPOP `combN` scope/result
+  pars stay disabled until that block's oper is set.
 
 ### Changed
 - `td-colab` — added a **Sibling** section cross-linking `td-working-mode` as the
