@@ -6,7 +6,11 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); this
 project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html). Released
 versions are tracked in `VERSION` and the Claude plugin manifests.
 
-## [Unreleased]
+## [1.3.0] - 2026-09-18
+
+Supersedes the 1.2.3 stamp that sat in `VERSION` and the plugin manifests without
+ever being released: `td-working-mode` is a whole new skill, and under SemVer a new
+feature is a minor bump, not a patch.
 
 ### Added
 - **`td-working-mode`** — new cross-cutting posture skill: capability routing
