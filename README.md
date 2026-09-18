@@ -2,7 +2,7 @@
 
 Portable Agent Skills for TouchDesigner. Teaches AI coding agents how to build TouchDesigner networks effectively using the [TDMCP](https://github.com/TouchDesigner/TDMCP) server.
 
-18 skills cover TOPs, CHOPs, POPs, SOPs, GLSL, materials, components, UI, and end-to-end workflow. See [SKILLS.md](SKILLS.md) for the full list.
+19 skills cover TOPs, CHOPs, POPs, SOPs, GLSL, materials, components, UI, and end-to-end workflow. See [SKILLS.md](SKILLS.md) for the full list.
 
 > **The `td-` prefix is reserved.** Installing skills — via the in-TD component, the plugin, or `install.py` — **manages the entire `td-` namespace** in the target skill directory: any `td-*` skill the current release no longer ships is removed on update. Author your own skills under your **own prefix** (e.g. `mystudio-foo`); anything named `td-*` is owned by this system and may be replaced or deleted without warning.
 
@@ -94,7 +94,7 @@ In Claude Code:
 /plugin install tdmcp-skills@touchdesigner
 ```
 
-This installs the 18 distributed skills and auto-registers the TDMCP MCP connection. Update with `/plugin marketplace update touchdesigner`; uninstall with `/plugin uninstall tdmcp-skills`.
+This installs the 19 distributed skills and auto-registers the TDMCP MCP connection. Update with `/plugin marketplace update touchdesigner`; uninstall with `/plugin uninstall tdmcp-skills`.
 
 Script alternative for Claude Code:
 

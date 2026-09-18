@@ -21,6 +21,9 @@ versions are tracked in `VERSION` and the Claude plugin manifests.
 - `td-pop-family` — two live-verified pitfalls: forceradialPOP `globforcemult`
   defaults to 0 (Global Force silently inert), and mathmixPOP `combN` scope/result
   pars stay disabled until that block's oper is set.
+- `td-general` — a **Get Docs** section: when to reach for `get_docs` (TD Python
+  API, concept articles) vs `get_help` (live parameter names/menus), plus `section`
+  drill-down so class pages don't arrive whole (~10K tokens with inlined inheritance).
 
 ### Changed
 - `td-colab` — added a **Sibling** section cross-linking `td-working-mode` as the
