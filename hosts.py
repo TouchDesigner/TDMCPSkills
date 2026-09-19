@@ -109,16 +109,32 @@ HOSTS = {
         mcp_scope='global',
         reload_hint=('Skills become /<skill-name> in the interactive TUI; headless -p does '
                      'not enumerate them. Confirm there, not with `agy -p`.'),
-        # 1.2.7. Paths from the official docs (antigravity.google/docs/skills) and
-        # corroborated by strings in the binary: a copied directory is discovered at
+        # 1.2.7. Paths from the official docs (antigravity.google/docs/skills),
+        # corroborated by strings in the binary (.agents/skills x12) and by agy
+        # itself reporting its workspace roots. A copied directory is discovered at
         # ~/.gemini/antigravity-cli/skills/ (global) or <workspace>/.agents/skills/
         # (project); plugins may also carry skills/. SKILL.md needs a `description`;
-        # `name` defaults to the folder. NOT confirmed by probe: headless mode does
-        # not list skills, and a control marker in agy's own builtin/skills/ came
-        # back empty too, so that test was uninformative rather than negative.
+        # `name` defaults to the folder.
+        #
+        # `_agents/skills` is a real alias (x2 in the binary) but not the primary
+        # form. agy also claimed `.agent/` and `_agent/` roots; neither appears in
+        # the binary, so treat those as unsupported — an agent describing its own
+        # paths is a claim, not evidence, same class as docs.
+        #
+        # Skills placed in .gemini/skills/ are NOT auto-mounted by agy; it can read
+        # them as files but they do not become /<skill-name>. That is why gemini and
+        # agy stay separate records despite sharing the ~/.gemini root.
+        #
+        # PROJECT PATH CONFIRMED 2026-09-19: skills installed to
+        # <workspace>/.agents/skills/ mount in the interactive TUI, checked in a
+        # folder where .agents was the only agent root. The GLOBAL path is still
+        # documented-only — headless cannot list skills, and a control marker in
+        # agy's own builtin/skills/ came back empty, so that test was
+        # uninformative rather than negative. Probe the global path separately
+        # before trusting it; evidence for one path is not evidence for both.
         # MCP: `agy mcp add [flags] <name> <commandOrUrl>`, http/https auto-detected,
         # config is global at ~/.gemini/config/mcp_config.json (verified).
-        verified='agy 1.2.7, 2026-09-18 (MCP probed; skills documented, TUI check pending)',
+        verified='agy 1.2.7, 2026-09-19 (MCP + project skills probed; global skills path documented only)',
     ),
     'claude': Host(
         'claude',

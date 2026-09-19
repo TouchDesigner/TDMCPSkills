@@ -27,11 +27,13 @@ versions are tracked in `VERSION` and the Claude plugin manifests.
   is an alternative that symlinks a checkout into that same directory.
 
 ### Changed
-- **`agy` gained its skills paths**, from the official docs at antigravity.google/docs/skills
-  and corroborated by strings in the binary: `~/.gemini/antigravity-cli/skills/` globally and
-  `<workspace>/.agents/skills/` per project, both plain directory copies. Not probe-confirmed:
-  `agy -p` does not enumerate skills (a control marker in its own `builtin/skills/` came back
-  empty too), and they surface as `/<skill-name>` in the interactive TUI.
+- **`agy` gained its skills paths**: `~/.gemini/antigravity-cli/skills/` globally and
+  `<workspace>/.agents/skills/` per project, both plain directory copies. The project path is
+  confirmed — skills installed there mount in the interactive TUI, checked in a folder where
+  `.agents` was the only agent root. The global path is documented only; `agy -p` cannot
+  enumerate skills, so a control marker in its own `builtin/skills/` came back empty too.
+  Skills in `.gemini/skills/` are NOT mounted by agy, which is why gemini and agy stay
+  separate records despite sharing the `~/.gemini` root.
 - **`codex` is a skills host after all.** The record previously said Codex had no skills
   mechanism, because `codex --help` has no `skills` subcommand. A probe disproved it: an
   identical marker skill placed in `~/.codex/skills/` **and** in `<project>/.agents/skills/`
