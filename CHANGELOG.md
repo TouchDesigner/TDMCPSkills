@@ -6,6 +6,60 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); this
 project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html). Released
 versions are tracked in `VERSION` and the Claude plugin manifests.
 
+## [Unreleased]
+
+### Added
+- **`hosts.py`** — shared agent-host registry: one `Host` record per agent CLI holding
+  its skills strategy (`copy_dir` / `cli` / `none`), discovery paths, scope vocabulary,
+  MCP add/remove/login command templates, and a `verified` stamp naming the CLI version
+  its claims were last tested against. `install.py` and TDMCP's in-component installer
+  both read it, so supporting a new agent is a one-record change.
+- Host records for `gemini` (0.46.0 — `~/.gemini/skills/`, scopes `user|workspace`),
+  `codex` (0.155.0 — no skills mechanism; global-only MCP config, `mcp login` for auth), and
+  `agy` (Antigravity CLI 1.2.7 — global MCP config, `agy mcp add <name> <url>` with the
+  scheme auto-detected; no skills mechanism located, so skill installs refuse rather than
+  guess a path).
+- Gemini is **not** deprecated — only its Homebrew formula is, which is why `brew upgrade`
+  stalls at 0.46.0. npm `@google/gemini-cli` is actively released (0.60.0 stable, nightlies
+  current). Install it from npm, not brew.
+- `--target gemini`. A directory copied straight into `~/.gemini/skills/` is discovered with
+  no CLI step, so the existing copy installer serves Gemini unchanged; `gemini skills link`
+  is an alternative that symlinks a checkout into that same directory.
+
+### Changed
+- **`agy` gained its skills paths**, from the official docs at antigravity.google/docs/skills
+  and corroborated by strings in the binary: `~/.gemini/antigravity-cli/skills/` globally and
+  `<workspace>/.agents/skills/` per project, both plain directory copies. Not probe-confirmed:
+  `agy -p` does not enumerate skills (a control marker in its own `builtin/skills/` came back
+  empty too), and they surface as `/<skill-name>` in the interactive TUI.
+- **`codex` is a skills host after all.** The record previously said Codex had no skills
+  mechanism, because `codex --help` has no `skills` subcommand. A probe disproved it: an
+  identical marker skill placed in `~/.codex/skills/` **and** in `<project>/.agents/skills/`
+  was named back by `codex exec` from both. Note the project path is the cross-agent
+  `.agents/skills/`, not `.codex/skills/`.
+- **`codex-legacy` retired into `codex`.** It claimed the same `~/.codex/skills/` path,
+  unverified, and two records on one directory make `status` report an install twice and let
+  one host's prune sweep delete the other's skills. Anyone who installed with
+  `--target codex-legacy` can uninstall with `--target codex` — same directory, same manifest.
+- `install.py` no longer defines its own target table; `--target` choices are now the
+  registry's directory-copying hosts.
+- **`--target all` installs to `claude` only** (was `agents` + `claude`). `~/.agents/skills/`
+  has not been confirmed as any host's discovery path, so `all` no longer creates it.
+  `--target agents` still works explicitly.
+
+### Removed
+- **The `agents` target.** `~/.agents/skills/` was recorded as a portable location shared by
+  Codex, Gemini CLI and OpenCode. Probed: Claude Code reads neither `~/.agents/skills/` nor
+  `<project>/.agents/skills/` (confirmed against a control skill in `.claude/skills/`), Gemini
+  reads its own `~/.gemini/skills/`, and the only host found reading `.agents/skills/` is Codex
+  — project-scope only, which the `codex` record now covers. The record also collided with
+  `codex` on `<project>/.agents/skills/`, so skill status reported one host's install under the
+  other's name. `--target agents` is gone; use `--target codex` or `--target agy`.
+
+### Fixed
+- `status` crashed with a `TypeError` when the registry contained a host without a
+  global skills path.
+
 ## [1.3.0] - 2026-09-18
 
 Supersedes the 1.2.3 stamp that sat in `VERSION` and the plugin manifests without

@@ -16,10 +16,15 @@ Three separate pieces work together:
 
 | Host | Skills location | MCP config |
 | --- | --- | --- |
-| Claude Code | `~/.claude/skills/` or plugin | `.mcp.json` / `~/.claude.json` (plugin auto-registers) |
-| Codex | `~/.agents/skills/` (or `~/.codex/skills/`) | `~/.codex/config.toml` |
-| Gemini CLI | `~/.agents/skills/` / `.agents/skills/` | `.gemini/settings.json` |
-| OpenCode | `~/.agents/skills/` / `.agents/skills/` | `opencode.json` |
+| Claude Code | `~/.claude/skills/` · `.claude/skills/` | `.mcp.json` / `~/.claude.json` (plugin auto-registers) |
+| Codex | `~/.codex/skills/` · `.agents/skills/` | `~/.codex/config.toml` |
+| Gemini CLI | `~/.gemini/skills/` · `.gemini/skills/` | `.gemini/settings.json` |
+| Antigravity (`agy`) | `~/.gemini/antigravity-cli/skills/` · `.agents/skills/` | `~/.gemini/config/mcp_config.json` |
+| OpenCode | not located | `opencode.json` |
+
+Each row is the global path followed by the project path. Codex and Antigravity share
+`<project>/.agents/skills/`, so one project install serves both. There is no single portable
+directory that all hosts read — `~/.agents/skills/` was tried and no host was found to read it.
 
 ## Requirements
 
@@ -27,18 +32,19 @@ Three separate pieces work together:
 - [TDMCP](https://github.com/TouchDesigner/TDMCP) installed and running in TouchDesigner
 - Python 3.7+ (only for the script install path)
 
-## Quick install — portable (Codex, Gemini CLI, OpenCode)
+## Quick install
 
 ```bash
 git clone https://github.com/TouchDesigner/TDMCPSkills.git
 cd TDMCPSkills
-python install.py install --target agents
+python install.py install --target claude
 ```
 
-Installs skills to `~/.agents/skills/`, the shared discovery location for portable Agent Skills. Project-local instead:
+Pick the target that matches your CLI (see **Install targets** below). Project-local instead
+of global:
 
 ```bash
-python install.py install --target agents --project /path/to/your/project
+python install.py install --target codex --project /path/to/your/project
 ```
 
 Installing skills does **not** configure the MCP connection — do that once per host (next section).
@@ -105,13 +111,14 @@ python install.py install --target claude
 ## Install targets
 
 ```bash
-python install.py install --target agents        # ~/.agents/skills/  (Codex, Gemini CLI, OpenCode)
 python install.py install --target claude        # ~/.claude/skills/  (Claude Code)
-python install.py install --target codex-legacy  # ~/.codex/skills/   (Codex compatibility, global only)
-python install.py install --target all           # agents + claude
+python install.py install --target gemini        # ~/.gemini/skills/  (Gemini CLI)
+python install.py install --target agy           # ~/.gemini/antigravity-cli/skills/  (Antigravity)
+python install.py install --target all           # the verified default set (currently: claude)
+python install.py install --target codex         # ~/.codex/skills/   (Codex; project scope is .agents/skills/)
 
-python install.py status --target agents         # install status + update check
-python install.py uninstall --target agents
+python install.py status --target claude         # install status + update check
+python install.py uninstall --target claude
 ```
 
 Notes:
@@ -119,12 +126,21 @@ Notes:
 - Each target keeps its own manifest; install/status/uninstall never touch another target.
 - The installer only ever removes skill directories recorded in its own manifest. Conflicting `td-*` directories it doesn't own stop the install with an error (override with `--replace`).
 - Pick **one primary target per host** — installing the same skills in multiple discovery locations can produce duplicates. `status` reports other known installs.
-- Running `install.py` with no `--target` currently defaults to `claude` for backward compatibility; this default will move to `agents` in a future release.
+- Running `install.py` with no `--target` defaults to `claude`.
+- **One project install can serve two hosts.** Codex and Antigravity both read
+  `<project>/.agents/skills/`, so a single project-scope install covers both. Their
+  global paths differ (`~/.codex/skills/` vs `~/.gemini/antigravity-cli/skills/`), so
+  user-scope installs stay separate.
+- **Gemini needs a trusted folder.** Skills copied into `~/.gemini/skills/` are discovered
+  with no CLI step, but Gemini disables MCP servers — and suppresses user-level ones —
+  in an untrusted folder, so trust the project folder or nothing connects. `gemini skills
+  link <path>` is an alternative that symlinks a checkout into the same directory, so
+  edits show up live.
 - If no local repo is detected, `install.py install` fetches the latest from GitHub directly.
 
 ### Migrating an existing `~/.claude/skills` install
 
-Nothing breaks: `--target claude` preserves the previous behavior exactly. To also use another host, additionally run `python install.py install --target agents`. The two installs are independent.
+Nothing breaks: `--target claude` preserves the previous behavior exactly. To also use another host, run that host's target as well (e.g. `--target codex`). Each target keeps its own manifest, so the installs are independent.
 
 ## Validation
 
@@ -151,7 +167,7 @@ Edit any skill under `skills/`, run `python validate.py`, then pick a testing lo
 **Via the script** — reinstalls globally, available in every project:
 
 ```bash
-python install.py install --target agents   # or --target claude
+python install.py install --target claude   # or codex / gemini / agy
 ```
 
 **Via the plugin (Claude Code)** — install this working tree as a local marketplace (fastest iteration; no push needed):

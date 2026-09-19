@@ -3,20 +3,23 @@
 
 Supports multiple agent hosts through install targets:
 
-    agents        ~/.agents/skills/   (portable — Codex, Gemini CLI, OpenCode)
-    claude        ~/.claude/skills/   (Claude Code)
-    codex-legacy  ~/.codex/skills/    (Codex compatibility, global only)
-    all           agents + claude
+    claude   ~/.claude/skills/                    (Claude Code)
+    codex    ~/.codex/skills/                     (Codex; project scope is .agents/skills/)
+    gemini   ~/.gemini/skills/                    (Gemini CLI)
+    agy      ~/.gemini/antigravity-cli/skills/    (Antigravity CLI)
+    all      the verified default set (currently: claude)
+
+Paths come from hosts.py, which records the CLI version each one was tested
+against. Re-test and update that stamp rather than trusting a stale entry.
 
 Dual-mode: when run from the TDMCPSkills repo (skills/ dir present), installs from
 local files. When run standalone from any directory, fetches the latest from GitHub.
 
 Usage:
-    python install.py install --target agents       # portable global install
     python install.py install --target claude       # Claude Code global install
-    python install.py install --target agents --project .   # project-local
-    python install.py status --target agents
-    python install.py uninstall --target agents
+    python install.py install --target codex --project .    # project-local
+    python install.py status --target claude
+    python install.py uninstall --target claude
 
 Skill installation does NOT configure the TDMCP MCP server — see README.md for
 per-host MCP configuration.
@@ -38,64 +41,19 @@ MANIFEST_NAME = "td-skills-manifest.json"
 SKILL_PREFIX = "td-"
 DEFAULT_REPO = "TouchDesigner/TDMCPSkills"
 DEFAULT_BRANCH = "main"
-DEFAULT_TARGET = "claude"  # migration default — will move to "agents" in a future release
+DEFAULT_TARGET = "claude"
 
 
 # ---------------------------------------------------------------------------
 # Target profiles
 # ---------------------------------------------------------------------------
+# One source of truth, shared with TDMCP's in-component installer: hosts.py.
+# Adding support for a new agent means adding a Host there, not editing this
+# file. `TARGETS` stays the local name because --target is the user-facing flag.
 
-class Target:
-    def __init__(self, ident, display, global_path, project_subpath, reload_hint):
-        self.ident = ident
-        self.display = display
-        self.global_path = global_path          # Path or None
-        self.project_subpath = project_subpath  # str or None (None = no project installs)
-        self.reload_hint = reload_hint
+from hosts import HOSTS as TARGETS, ALL_HOSTS as ALL_TARGETS, expand_hosts, copy_hosts
 
-    def resolve(self, project_path):
-        """Resolve the skills directory for this target."""
-        if project_path:
-            if not self.project_subpath:
-                print(f"Error: target '{self.ident}' does not support project installs.")
-                sys.exit(1)
-            return Path(project_path).resolve() / self.project_subpath
-        return self.global_path
-
-
-TARGETS = {
-    "agents": Target(
-        "agents",
-        "Portable agents (Codex, Gemini CLI, OpenCode)",
-        Path.home() / ".agents" / "skills",
-        ".agents/skills",
-        "Restart the agent CLI (or start a new session) so it re-discovers skills.",
-    ),
-    "claude": Target(
-        "claude",
-        "Claude Code",
-        Path.home() / ".claude" / "skills",
-        ".claude/skills",
-        "Restart Claude Code or start a new session to pick up skill changes.",
-    ),
-    "codex-legacy": Target(
-        "codex-legacy",
-        "Codex (legacy ~/.codex/skills)",
-        Path.home() / ".codex" / "skills",
-        None,
-        "Restart Codex or start a new session to pick up skill changes.",
-    ),
-}
-
-# "all" expands to the primary targets; codex-legacy stays explicit so Codex
-# users don't end up with duplicate skills in two discovery locations.
-ALL_TARGETS = ["agents", "claude"]
-
-
-def expand_targets(name):
-    if name == "all":
-        return [TARGETS[t] for t in ALL_TARGETS]
-    return [TARGETS[name]]
+expand_targets = expand_hosts
 
 
 # ---------------------------------------------------------------------------
@@ -353,7 +311,7 @@ def report_other_installs(current_target, project_path):
         return
     others = []
     for ident, target in TARGETS.items():
-        if ident == current_target.ident:
+        if ident == current_target.ident or not target.copies_skills:
             continue
         if read_manifest(target.global_path):
             others.append(f"{ident} ({target.global_path})")
@@ -421,12 +379,10 @@ def main():
     )
     parser.add_argument(
         "--target",
-        choices=[*TARGETS.keys(), "all"],
+        choices=[*copy_hosts(), "all"],
         default=None,
-        help=f"Install target: agents (portable ~/.agents/skills), claude (~/.claude/skills), "
-             f"codex-legacy (~/.codex/skills), or all (agents + claude). "
-             f"Default: {DEFAULT_TARGET} (for compatibility; 'agents' is recommended for "
-             f"Codex, Gemini CLI, and OpenCode)",
+        help=f"Install target: one of the hosts in hosts.py, or 'all' for the "
+             f"verified default set. Default: {DEFAULT_TARGET}",
     )
     parser.add_argument(
         "--project",
@@ -457,11 +413,23 @@ def main():
     target_name = args.target
     if target_name is None:
         target_name = DEFAULT_TARGET
-        print(f"No --target given; defaulting to '{DEFAULT_TARGET}'.")
-        print("  For Codex, Gemini CLI, or OpenCode use: --target agents\n")
+        print(f"No --target given; defaulting to '{DEFAULT_TARGET}'.\n")
 
+    # Codex and Antigravity share <project>/.agents/skills, so `--target all
+    # --project X` would otherwise install the same skills there twice and write
+    # the manifest twice over.
+    done_dirs = {}
     for target in expand_targets(target_name):
-        target_dir = target.resolve(args.project)
+        try:
+            target_dir = target.resolve(args.project)
+        except ValueError as e:
+            print(f"Error: {e}")
+            sys.exit(1)
+        if target_dir in done_dirs:
+            print(f"Skipping {target.ident}: same directory as "
+                  f"{done_dirs[target_dir]} ({target_dir})\n")
+            continue
+        done_dirs[target_dir] = target.ident
         if args.command == "install":
             do_install(target, target_dir, repo=args.repo,
                        version_tag=args.version_tag, replace=args.replace)
