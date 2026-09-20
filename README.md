@@ -18,13 +18,17 @@ Three separate pieces work together:
 | --- | --- | --- |
 | Claude Code | `~/.claude/skills/` · `.claude/skills/` | `.mcp.json` / `~/.claude.json` (plugin auto-registers) |
 | Codex | `~/.codex/skills/` · `.agents/skills/` | `~/.codex/config.toml` |
-| Gemini CLI | `~/.gemini/skills/` · `.gemini/skills/` | `.gemini/settings.json` |
 | Antigravity (`agy`) | `~/.gemini/antigravity-cli/skills/` · `.agents/skills/` | `~/.gemini/config/mcp_config.json` |
 | OpenCode | not located | `opencode.json` |
 
-Each row is the global path followed by the project path. Codex and Antigravity share
-`<project>/.agents/skills/`, so one project install serves both. There is no single portable
-directory that all hosts read — `~/.agents/skills/` was tried and no host was found to read it.
+Each row is the global path followed by the project path. In practice there are two project
+roots: `.claude/skills/` for Claude Code and `.agents/skills/` for Codex and Antigravity, which
+share it — so one project install serves both. Note `~/.agents/skills/` (the home-directory
+form) is read by nothing; only the project-relative `.agents/` is real.
+
+Gemini CLI was retired by Google on 2026-06-18 and replaced by Antigravity (`agy`), so it is
+no longer a target. Legacy access continues only for enterprise licences and direct paid API
+keys.
 
 ## Requirements
 
@@ -51,14 +55,14 @@ Installing skills does **not** configure the MCP connection — do that once per
 
 ## TDMCP MCP configuration
 
-TDMCP serves MCP over HTTP at `http://localhost:13316/mcp`. Start it inside TouchDesigner before using any agent.
+TDMCP serves MCP over HTTP at `http://127.0.0.1:13316/mcp`. Start it inside TouchDesigner before using any agent.
 
 **Claude Code** — project `.mcp.json` (or `~/.claude.json`):
 
 ```json
 {
   "mcpServers": {
-    "tdmcp": { "type": "http", "url": "http://localhost:13316/mcp" }
+    "tdmcp": { "type": "http", "url": "http://127.0.0.1:13316/mcp" }
   }
 }
 ```
@@ -67,18 +71,23 @@ TDMCP serves MCP over HTTP at `http://localhost:13316/mcp`. Start it inside Touc
 
 ```toml
 [mcp_servers.touchdesigner]
-url = "http://localhost:13316/mcp"
+url = "http://127.0.0.1:13316/mcp"
 ```
 
-**Gemini CLI** — project `.gemini/settings.json` (or `~/.gemini/settings.json`):
+**Antigravity (`agy`)** — global `~/.gemini/config/mcp_config.json`, or carried by a plugin
+at `<project>/.agents/plugins/<name>/mcp_config.json` and registered with
+`agy plugin install <path>`:
 
 ```json
 {
   "mcpServers": {
-    "tdmcp": { "httpUrl": "http://localhost:13316/mcp" }
+    "touchdesigner": { "serverUrl": "http://127.0.0.1:13316/mcp" }
   }
 }
 ```
+
+`agy mcp list` shows only the global file — plugin-provided servers appear in the interactive
+TUI's MCP Servers panel instead, with their tools namespaced `<plugin>_<server>`.
 
 **OpenCode** — project `opencode.json` (or `~/.config/opencode/opencode.json`):
 
@@ -86,7 +95,7 @@ url = "http://localhost:13316/mcp"
 {
   "$schema": "https://opencode.ai/config.json",
   "mcp": {
-    "tdmcp": { "type": "remote", "url": "http://localhost:13316/mcp", "enabled": true }
+    "tdmcp": { "type": "remote", "url": "http://127.0.0.1:13316/mcp", "enabled": true }
   }
 }
 ```
@@ -112,9 +121,9 @@ python install.py install --target claude
 
 ```bash
 python install.py install --target claude        # ~/.claude/skills/  (Claude Code)
-python install.py install --target gemini        # ~/.gemini/skills/  (Gemini CLI)
 python install.py install --target agy           # ~/.gemini/antigravity-cli/skills/  (Antigravity)
-python install.py install --target all           # the verified default set (currently: claude)
+python install.py install --target all           # claude + codex + agy
+python install.py install --target others        # codex + agy (everything except Claude Code)
 python install.py install --target codex         # ~/.codex/skills/   (Codex; project scope is .agents/skills/)
 
 python install.py status --target claude         # install status + update check
@@ -131,11 +140,6 @@ Notes:
   `<project>/.agents/skills/`, so a single project-scope install covers both. Their
   global paths differ (`~/.codex/skills/` vs `~/.gemini/antigravity-cli/skills/`), so
   user-scope installs stay separate.
-- **Gemini needs a trusted folder.** Skills copied into `~/.gemini/skills/` are discovered
-  with no CLI step, but Gemini disables MCP servers — and suppresses user-level ones —
-  in an untrusted folder, so trust the project folder or nothing connects. `gemini skills
-  link <path>` is an alternative that symlinks a checkout into the same directory, so
-  edits show up live.
 - If no local repo is detected, `install.py install` fetches the latest from GitHub directly.
 
 ### Migrating an existing `~/.claude/skills` install
@@ -167,7 +171,7 @@ Edit any skill under `skills/`, run `python validate.py`, then pick a testing lo
 **Via the script** — reinstalls globally, available in every project:
 
 ```bash
-python install.py install --target claude   # or codex / gemini / agy
+python install.py install --target claude   # or codex / agy / all / others
 ```
 
 **Via the plugin (Claude Code)** — install this working tree as a local marketplace (fastest iteration; no push needed):

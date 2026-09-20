@@ -169,30 +169,6 @@ HOSTS = {
         # without trust_level="trusted"). CODEX_HOME=./.codex does load one.
         verified='codex-cli 0.155.0, 2026-09-18 (skills + MCP both probed)',
     ),
-    'gemini': Host(
-        'gemini',
-        'Gemini CLI',
-        global_path=Path.home() / '.gemini' / 'skills',
-        project_subpath='.gemini/skills',
-        # Gemini also has its own CLI for this; `link` symlinks a checkout into
-        # the same directory, so edits show up live. Kept for the README, but
-        # the installer does not need it — a plain copy is discovered.
-        link_cmd='gemini skills link {path} --scope {scope}',
-        unlink_cmd='gemini skills uninstall {name} --scope {scope}',
-        scope_names={'user': 'user', 'project': 'workspace'},
-        mcp_add='gemini mcp add -t http touchdesigner {url}',
-        mcp_remove='gemini mcp remove touchdesigner',
-        mcp_scope='project',
-        reload_hint=('Run `gemini skills list --all` to confirm. Gemini disables MCP servers '
-                     'AND suppresses user-level ones in an untrusted folder — trust the project '
-                     'folder first or nothing connects.'),
-        # 0.46.0: a directory copied straight into ~/.gemini/skills/ is discovered
-        # with no CLI involvement (verified), so the ordinary copy install serves
-        # Gemini. `gemini skills link` merely symlinks into that same directory.
-        # The workspace path is inferred from the user path; it could not be
-        # confirmed because this folder is untrusted.
-        verified='gemini-cli 0.46.0, 2026-09-18 (user scope verified; workspace inferred)',
-    ),
     'opencode': Host(
         'opencode',
         'OpenCode',
@@ -212,17 +188,21 @@ HOSTS = {
 SHARED_PROJECT_ROOT = {'codex', 'agy'}
 
 # `all` means "put the skills wherever a supported agent will look for them".
-# Every host here is one whose discovery path we have established, so installing
-# to all of them costs a few directories and guarantees that whichever CLI the
-# user reaches for, the skills are already there. Hosts whose path is unknown
-# (opencode) stay out: we would be guessing at a location.
-ALL_HOSTS = ['claude', 'codex', 'gemini', 'agy']
+# Every host here has a discovery path we established by probe.
+ALL_HOSTS = ['claude', 'codex', 'agy']
+
+# Two roots matter in practice: .claude/ and .agents/. These presets are the
+# choices that actually differ, so the in-TD install is one meaningful pick
+# rather than a per-host menu.
+PRESETS = {
+    'all': ALL_HOSTS,
+    'others': [h for h in ALL_HOSTS if h != 'claude'],
+}
 
 
 def expand_hosts(name):
-    if name == 'all':
-        return [HOSTS[h] for h in ALL_HOSTS]
-    return [HOSTS[name]]
+    """Host records for a preset name or a single host ident."""
+    return [HOSTS[h] for h in PRESETS.get(name, [name])]
 
 
 def copy_hosts():

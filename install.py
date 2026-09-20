@@ -5,9 +5,9 @@ Supports multiple agent hosts through install targets:
 
     claude   ~/.claude/skills/                    (Claude Code)
     codex    ~/.codex/skills/                     (Codex; project scope is .agents/skills/)
-    gemini   ~/.gemini/skills/                    (Gemini CLI)
-    agy      ~/.gemini/antigravity-cli/skills/    (Antigravity CLI)
-    all      the verified default set (currently: claude)
+    agy      ~/.gemini/antigravity-cli/skills/    (Antigravity; project scope is .agents/skills/)
+    all      claude + codex + agy
+    others   codex + agy  (everything except Claude Code)
 
 Paths come from hosts.py, which records the CLI version each one was tested
 against. Re-test and update that stamp rather than trusting a stale entry.
@@ -51,7 +51,7 @@ DEFAULT_TARGET = "claude"
 # Adding support for a new agent means adding a Host there, not editing this
 # file. `TARGETS` stays the local name because --target is the user-facing flag.
 
-from hosts import HOSTS as TARGETS, ALL_HOSTS as ALL_TARGETS, expand_hosts, copy_hosts
+from hosts import HOSTS as TARGETS, ALL_HOSTS as ALL_TARGETS, PRESETS, expand_hosts, copy_hosts
 
 expand_targets = expand_hosts
 
@@ -379,7 +379,7 @@ def main():
     )
     parser.add_argument(
         "--target",
-        choices=[*copy_hosts(), "all"],
+        choices=[*copy_hosts(), *sorted(PRESETS)],
         default=None,
         help=f"Install target: one of the hosts in hosts.py, or 'all' for the "
              f"verified default set. Default: {DEFAULT_TARGET}",

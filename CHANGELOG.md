@@ -9,6 +9,10 @@ versions are tracked in `VERSION` and the Claude plugin manifests.
 ## [Unreleased]
 
 ### Added
+- **Install presets.** `--target all` (claude + codex + agy) and `--target others` (everything
+  except Claude Code). With Gemini gone there are two project roots — `.claude/skills/` and
+  `.agents/skills/` — so these are the choices that actually differ, and the in-TD Skills page
+  now offers them as one pick instead of a per-host menu.
 - **`hosts.py`** — shared agent-host registry: one `Host` record per agent CLI holding
   its skills strategy (`copy_dir` / `cli` / `none`), discovery paths, scope vocabulary,
   MCP add/remove/login command templates, and a `verified` stamp naming the CLI version
@@ -50,6 +54,11 @@ versions are tracked in `VERSION` and the Claude plugin manifests.
   `--target agents` still works explicitly.
 
 ### Removed
+- **Gemini CLI support.** Google retired the standalone CLI on 2026-06-18 and replaced it with
+  Antigravity (`agy`), which inherits the `~/.gemini` root; only enterprise licences and paid
+  API keys retain legacy access. `--target gemini` is gone. Skills already installed to
+  `~/.gemini/skills/` or `<project>/.gemini/skills/` should be uninstalled before upgrading,
+  since nothing will manage them afterwards.
 - **The `agents` target.** `~/.agents/skills/` was recorded as a portable location shared by
   Codex, Gemini CLI and OpenCode. Probed: Claude Code reads neither `~/.agents/skills/` nor
   `<project>/.agents/skills/` (confirmed against a control skill in `.claude/skills/`), Gemini
