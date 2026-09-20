@@ -6,7 +6,13 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); this
 project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html). Released
 versions are tracked in `VERSION` and the Claude plugin manifests.
 
-## [Unreleased]
+## [1.4.0] - 2026-09-19
+
+This is the release where TDMCPSkills becomes skills content and nothing else.
+Installation and the agent-host registry now live in the TDMCP component, which
+ships them inside `TDMCP.tox`. Entries below that describe `--target` flags
+document the installer as it was when the change landed; the equivalent controls
+are now the component's `Install For` and `Install Scope` parameters.
 
 ### Removed
 - **`install.py` and `hosts.py`.** This repo is skills content now; installation lives in the
@@ -28,8 +34,7 @@ versions are tracked in `VERSION` and the Claude plugin manifests.
 
 
 ### Added
-- **Install presets.** `--target all` (claude + codex + agy) and `--target others` (everything
-  except Claude Code). With Gemini gone there are two project roots — `.claude/skills/` and
+- **Install presets.** `all` (claude + codex + agy) and `others` (everything except Claude Code). With Gemini gone there are two project roots — `.claude/skills/` and
   `.agents/skills/` — so these are the choices that actually differ, and the in-TD Skills page
   now offers them as one pick instead of a per-host menu.
 - **`hosts.py`** — shared agent-host registry: one `Host` record per agent CLI holding
@@ -65,7 +70,7 @@ versions are tracked in `VERSION` and the Claude plugin manifests.
 - **`codex-legacy` retired into `codex`.** It claimed the same `~/.codex/skills/` path,
   unverified, and two records on one directory make `status` report an install twice and let
   one host's prune sweep delete the other's skills. Anyone who installed with
-  `--target codex-legacy` can uninstall with `--target codex` — same directory, same manifest.
+  `codex-legacy` can uninstall with `codex` — same directory, same manifest.
 - `install.py` no longer defines its own target table; `--target` choices are now the
   registry's directory-copying hosts.
 - **`--target all` installs to `claude` only** (was `agents` + `claude`). `~/.agents/skills/`
@@ -75,7 +80,7 @@ versions are tracked in `VERSION` and the Claude plugin manifests.
 ### Removed
 - **Gemini CLI support.** Google retired the standalone CLI on 2026-06-18 and replaced it with
   Antigravity (`agy`), which inherits the `~/.gemini` root; only enterprise licences and paid
-  API keys retain legacy access. `--target gemini` is gone. Skills already installed to
+  API keys retain legacy access. The `gemini` target is gone. Skills already installed to
   `~/.gemini/skills/` or `<project>/.gemini/skills/` should be uninstalled before upgrading,
   since nothing will manage them afterwards.
 - **The `agents` target.** `~/.agents/skills/` was recorded as a portable location shared by
@@ -84,7 +89,7 @@ versions are tracked in `VERSION` and the Claude plugin manifests.
   reads its own `~/.gemini/skills/`, and the only host found reading `.agents/skills/` is Codex
   — project-scope only, which the `codex` record now covers. The record also collided with
   `codex` on `<project>/.agents/skills/`, so skill status reported one host's install under the
-  other's name. `--target agents` is gone; use `--target codex` or `--target agy`.
+  other's name. The `agents` target is gone; use `codex` or `agy`.
 
 ### Fixed
 - `status` crashed with a `TypeError` when the registry contained a host without a
