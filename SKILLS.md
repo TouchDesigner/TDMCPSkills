@@ -1,6 +1,6 @@
 # TDMCP Skills
 
-Skills teach AI coding agents how to work with TouchDesigner effectively. They are installed to each host's skill discovery directory (see [README.md](README.md) for supported hosts and install targets) and auto-discovered.
+Skills teach AI coding agents how to work with TouchDesigner effectively. They are installed to each host's skill discovery directory by the TDMCP component (see [README.md](README.md) for supported hosts and where skills land) and auto-discovered.
 
 ## Structure
 
@@ -45,7 +45,7 @@ Each skill is a directory containing:
 
 ### Contributor Skills
 
-Not distributed via plugin or `install.py`. Live in `.claude/skills/` and auto-load only when Claude Code is working in a clone of this repo.
+Not distributed via the plugin or the TDMCP component. Live in `.claude/skills/` and auto-load only when Claude Code is working in a clone of this repo.
 
 - **`td-skills-local`** — Project-local install helper (legacy; superseded by plugin install)
 

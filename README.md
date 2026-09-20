@@ -4,7 +4,7 @@ Portable Agent Skills for TouchDesigner. Teaches AI coding agents how to build T
 
 19 skills cover TOPs, CHOPs, POPs, SOPs, GLSL, materials, components, UI, and end-to-end workflow. See [SKILLS.md](SKILLS.md) for the full list.
 
-> **The `td-` prefix is reserved.** Installing skills — via the in-TD component, the plugin, or `install.py` — **manages the entire `td-` namespace** in the target skill directory: any `td-*` skill the current release no longer ships is removed on update. Author your own skills under your **own prefix** (e.g. `mystudio-foo`); anything named `td-*` is owned by this system and may be replaced or deleted without warning.
+> **The `td-` prefix is reserved.** Installing skills — via the in-TD component or the plugin — **manages the `td-` skills it installed**: any `td-*` skill it previously installed and the current release no longer ships is removed on update. A `td-*` folder it did not install is left alone. Author your own skills under your **own prefix** (e.g. `mystudio-foo`); anything named `td-*` is owned by this system and may be replaced or deleted without warning.
 
 Three separate pieces work together:
 
@@ -34,24 +34,30 @@ keys.
 
 - One of the supported agent CLIs above
 - [TDMCP](https://github.com/TouchDesigner/TDMCP) installed and running in TouchDesigner
-- Python 3.7+ (only for the script install path)
 
 ## Quick install
 
-```bash
-git clone https://github.com/TouchDesigner/TDMCPSkills.git
-cd TDMCPSkills
-python install.py install --target claude
-```
+**This repo is skills content. Installation lives in the TDMCP component.** There is no
+installer script here.
 
-Pick the target that matches your CLI (see **Install targets** below). Project-local instead
-of global:
+On the component's **Skills** page:
 
-```bash
-python install.py install --target codex --project /path/to/your/project
-```
+| Parameter | Meaning |
+| --- | --- |
+| `Install For` | `Everything` (`.claude/` + `.agents/`), `Claude Code only`, `Everything except Claude`, or a single host |
+| `Install Scope` | `local` writes into the current project, `user` writes into your home directory |
+| `Skills Source` | a checkout of this repo, or **blank to download the published release** |
+| `Skills Version` | a release tag to pin, or blank for the latest |
 
-Installing skills does **not** configure the MCP connection — do that once per host (next section).
+Then pulse **Install Agent Skills**. `Agent Skills Status` reports what landed where, and its
+tooltip lists the resolved directories.
+
+Claude Code users can also install from the plugin marketplace (below), which registers the
+MCP connection at the same time.
+
+Installing skills does **not** configure the MCP connection — do that once per host (next
+section), or copy the ready-made command from the component's **Show Client Commands**
+button.
 
 ## TDMCP MCP configuration
 
@@ -111,40 +117,27 @@ In Claude Code:
 
 This installs the 19 distributed skills and auto-registers the TDMCP MCP connection. Update with `/plugin marketplace update touchdesigner`; uninstall with `/plugin uninstall tdmcp-skills`.
 
-Script alternative for Claude Code:
+## Where skills land
 
-```bash
-python install.py install --target claude
-```
-
-## Install targets
-
-```bash
-python install.py install --target claude        # ~/.claude/skills/  (Claude Code)
-python install.py install --target agy           # ~/.gemini/antigravity-cli/skills/  (Antigravity)
-python install.py install --target all           # claude + codex + agy
-python install.py install --target others        # codex + agy (everything except Claude Code)
-python install.py install --target codex         # ~/.codex/skills/   (Codex; project scope is .agents/skills/)
-
-python install.py status --target claude         # install status + update check
-python install.py uninstall --target claude
-```
+| Target | Global (`user` scope) | Project (`local` scope) |
+| --- | --- | --- |
+| Claude Code | `~/.claude/skills/` | `.claude/skills/` |
+| Codex | `~/.codex/skills/` | `.agents/skills/` |
+| Antigravity (`agy`) | `~/.gemini/antigravity-cli/skills/` | `.agents/skills/` |
 
 Notes:
 
-- Each target keeps its own manifest; install/status/uninstall never touch another target.
-- The installer only ever removes skill directories recorded in its own manifest. Conflicting `td-*` directories it doesn't own stop the install with an error (override with `--replace`).
-- Pick **one primary target per host** — installing the same skills in multiple discovery locations can produce duplicates. `status` reports other known installs.
-- Running `install.py` with no `--target` defaults to `claude`.
+- Each destination keeps its own manifest; installing to one never touches another.
+- The installer removes only skills its own manifest recorded. A `td-*` directory it did not
+  install — another tool's, or hand-made — is left alone.
 - **One project install can serve two hosts.** Codex and Antigravity both read
-  `<project>/.agents/skills/`, so a single project-scope install covers both. Their
-  global paths differ (`~/.codex/skills/` vs `~/.gemini/antigravity-cli/skills/`), so
-  user-scope installs stay separate.
-- If no local repo is detected, `install.py install` fetches the latest from GitHub directly.
-
-### Migrating an existing `~/.claude/skills` install
-
-Nothing breaks: `--target claude` preserves the previous behavior exactly. To also use another host, run that host's target as well (e.g. `--target codex`). Each target keeps its own manifest, so the installs are independent.
+  `<project>/.agents/skills/`, so a single project-scope install covers both, and
+  `Install For: Everything` writes two directories rather than three. Their global paths
+  differ, so `user`-scope installs stay separate.
+- Pick **one scope per host**. Installing the same skills both globally and project-locally
+  works — project wins — but it is two things to keep updated.
+- With `Skills Source` blank the component downloads the latest **release**, not `main`.
+  `main` is the rolling line; a tag is the sanctioned subset.
 
 ## Validation
 
@@ -168,11 +161,8 @@ git checkout -b my-custom-skills
 
 Edit any skill under `skills/`, run `python validate.py`, then pick a testing loop:
 
-**Via the script** — reinstalls globally, available in every project:
-
-```bash
-python install.py install --target claude   # or codex / agy / all / others
-```
+**Via the component** — point `Skills Source` at your working tree and pulse
+**Install Agent Skills**. Re-pulse after each edit.
 
 **Via the plugin (Claude Code)** — install this working tree as a local marketplace (fastest iteration; no push needed):
 
@@ -192,9 +182,9 @@ git merge upstream/main
 
 ### Contributor skills
 
-Contributor-only skills live in this repo's `.claude/skills/` and auto-load only when Claude Code is working inside a clone of TDMCPSkills. They are **not** distributed via the plugin or `install.py`.
+Contributor-only skills live in this repo's `.claude/skills/` and auto-load only when Claude Code is working inside a clone of TDMCPSkills. They are **not** distributed via the plugin or the component.
 
-**`/td-skills-local`** — legacy helper for installing skills into a specific project's `.claude/skills/`. Mostly superseded by the plugin install path.
+**`/td-skills-local`** — drives the component's Skills page to install into a specific project. Useful when you want project-local skills without clicking through the parameter page.
 
 ## Compatibility notes
 

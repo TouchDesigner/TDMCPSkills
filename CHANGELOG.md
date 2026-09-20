@@ -8,6 +8,25 @@ versions are tracked in `VERSION` and the Claude plugin manifests.
 
 ## [Unreleased]
 
+### Removed
+- **`install.py` and `hosts.py`.** This repo is skills content now; installation lives in the
+  TDMCP component, which ships the host registry inside `TDMCP.tox`. That removes the split
+  where two installers drifted — the CLI had a conflict guard the component lacked, the
+  component had multi-host fan-out and per-host status the CLI lacked — and it fixes the case
+  where a user with only the `.tox` had no working client-command table, because the registry
+  lived across a repo boundary.
+  **Migrating:** an existing `~/.claude/skills/` install keeps working. Set `Install For:
+  Claude Code only`, `Install Scope: user`, and pulse `Install Agent Skills` to bring it under
+  the component's management.
+
+### Changed
+- `smoketest/setup.py` copies the repo's `td-*` skills directly instead of shelling out to
+  `install.py`, so the harness still works without TouchDesigner running. Its host table drops
+  the retired Gemini CLI for Antigravity (`agy`), and its MCP URL uses IPv4 loopback — the
+  server binds `127.0.0.1`, and `localhost` resolves to `::1` first on many hosts.
+- `/td-skills-local` drives the component's Skills page rather than the deleted script.
+
+
 ### Added
 - **Install presets.** `--target all` (claude + codex + agy) and `--target others` (everything
   except Claude Code). With Gemini gone there are two project roots — `.claude/skills/` and

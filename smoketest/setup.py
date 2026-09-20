@@ -6,7 +6,7 @@ Creates, in the given project directory:
   rules and the five smoke tests
 - the host's MCP config for TDMCP (only if absent — never overwrites)
 - per-test slash commands where the host supports project commands
-- a project-local skill install via install.py
+- a project-local copy of the repo's td-* skills
 
 The five test definitions live in TESTS below — the single source for both the
 instruction file and the command files.
@@ -18,11 +18,12 @@ Usage:
 
 import argparse
 import json
-import subprocess
-import sys
+import shutil
 from pathlib import Path
 
-MCP_URL = "http://localhost:13316/mcp"
+# IPv4 loopback on purpose: the server binds 127.0.0.1, and `localhost`
+# resolves to ::1 first on many hosts, which some clients report as refused.
+MCP_URL = "http://127.0.0.1:13316/mcp"
 REPO = Path(__file__).resolve().parent.parent
 
 REPORT_LINE = (
@@ -119,7 +120,6 @@ HOSTS = {
     "claude": {
         "display": "Claude Code",
         "instructions": "CLAUDE.md",
-        "skills_target": "claude",
         "skills_dir": ".claude/skills/",
         "command_dir": ".claude/commands",
         "command_format": "md",
@@ -130,7 +130,6 @@ HOSTS = {
     "codex": {
         "display": "Codex",
         "instructions": "AGENTS.md",
-        "skills_target": "agents",
         "skills_dir": ".agents/skills/",
         "command_dir": None,  # Codex prompts are global-only (~/.codex/prompts)
         "command_format": None,
@@ -140,21 +139,25 @@ HOSTS = {
                     "  [mcp_servers.touchdesigner]\n"
                     f"  url = \"{MCP_URL}\"",
     },
-    "gemini": {
-        "display": "Gemini CLI",
-        "instructions": "GEMINI.md",
-        "skills_target": "agents",
+    "agy": {
+        # Antigravity replaced the standalone Gemini CLI, which Google retired
+        # on 2026-06-18. Skills mount from <workspace>/.agents/skills (probed);
+        # MCP config is global, or carried by a plugin the user installs.
+        "display": "Antigravity CLI",
+        "instructions": "AGENTS.md",
         "skills_dir": ".agents/skills/",
-        "command_dir": ".gemini/commands",
-        "command_format": "toml",
-        "mcp_file": ".gemini/settings.json",
-        "mcp_content": {"mcpServers": {"tdmcp": {"httpUrl": MCP_URL}}},
-        "mcp_note": "Registered for this project in `.gemini/settings.json` as the `tdmcp` MCP server.",
+        "command_dir": None,
+        "command_format": None,
+        "mcp_file": None,
+        "mcp_content": None,
+        "mcp_note": "Registered globally in `~/.gemini/config/mcp_config.json`:\n"
+                    '  {"mcpServers": {"touchdesigner": {"serverUrl": '
+                    f'"{MCP_URL}"}}}}}}\n'
+                    "  (note serverUrl, not url — Antigravity rejects url)",
     },
     "opencode": {
         "display": "OpenCode",
         "instructions": "AGENTS.md",
-        "skills_target": "agents",
         "skills_dir": ".agents/skills/",
         "command_dir": ".opencode/command",
         "command_format": "md",
@@ -266,6 +269,28 @@ def write_if_absent(path, content, label):
     print(f"  {label}: wrote {path}")
 
 
+def copy_skills(dest):
+    """Copy this repo's td-* skills into dest.
+
+    install.py used to do this. It was removed when TDMCPSkills became a content
+    repo — installation lives in the TDMCP component now. The harness only needs
+    a plain copy into a known directory, with no manifest and no pruning, and it
+    must work without TouchDesigner running, so it does the copy itself rather
+    than driving the component.
+    """
+    src = REPO / "skills"
+    names = sorted(d.name for d in src.iterdir()
+                   if d.is_dir() and d.name.startswith("td-")
+                   and (d / "SKILL.md").is_file())
+    dest.mkdir(parents=True, exist_ok=True)
+    for n in names:
+        target = dest / n
+        if target.exists():
+            shutil.rmtree(target)
+        shutil.copytree(src / n, target)
+    print(f"  skills: copied {len(names)} into {dest}")
+
+
 def main():
     parser = argparse.ArgumentParser(description="Generate a TDMCP smoke-test harness")
     parser.add_argument("--host", required=True, choices=sorted(HOSTS))
@@ -305,11 +330,7 @@ def main():
         print(f"  commands: wrote smoketest1-{len(TESTS)} in {cmd_dir}")
 
     if not args.skip_install:
-        subprocess.run(
-            [sys.executable, str(REPO / "install.py"), "install",
-             "--target", h["skills_target"], "--project", str(project)],
-            check=True,
-        )
+        copy_skills(project / h["skills_dir"])
 
     print(f"Done. Start {h['display']} in {project} and run smoke test 1.")
 

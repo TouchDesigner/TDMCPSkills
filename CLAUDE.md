@@ -5,7 +5,6 @@ Skills for the TouchDesigner MCP server. Each skill teaches Claude how to work w
 ## Structure
 
 - `skills/` — skill directories (all prefixed `td-`), each with `SKILL.md` + optional `reference.md`, `examples.md`
-- `install.py` — cross-platform installer (install, uninstall, status)
 - `SKILLS.md` — master index of all skills
 
 ## Workflow
@@ -27,5 +26,5 @@ Skills for the TouchDesigner MCP server. Each skill teaches Claude how to work w
 
 ## Changelog
 
-- Every change to distributed content (skills, `install.py`, `validate.py`, docs, `VERSION`) → add an entry under `[Unreleased]` in `CHANGELOG.md` before committing. Keep a Changelog format: Added / Changed / Fixed / Removed.
+- Every change to distributed content (skills, `validate.py`, docs, `VERSION`) → add an entry under `[Unreleased]` in `CHANGELOG.md` before committing. Keep a Changelog format: Added / Changed / Fixed / Removed.
 - Adding/removing a skill → also update its row in `td-general`'s Skill Map (`validate.py` enforces map↔skills sync).

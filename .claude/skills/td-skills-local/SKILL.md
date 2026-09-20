@@ -1,5 +1,5 @@
 ---
-description: Install, update, or remove TDMCPSkills in the current project. Use when the user asks to install skills locally, update local skills, or remove local skill overrides.
+description: Install, update, or remove TD skills in the current project. Use when the user asks to install skills locally, update local skills, or remove local skill overrides.
 user_invocable: true
 ---
 
@@ -7,38 +7,51 @@ user_invocable: true
 
 Manages project-local TD skill installations. Project-level skills in `.claude/skills/` override global skills in `~/.claude/skills/` when names match.
 
+Installation lives in the **TDMCP component**, not in this repo. This repo is skills content only — there is no `install.py` here any more.
+
 ## Prerequisites
 
-- TDMCPSkills must be installed globally first (`python install.py install` from the skills repo)
-- The global install must have been done from a local git repo (not a zip), so `repo_path` is in the manifest
+- TouchDesigner is running with the TDMCP component active
+- You can reach it through the `touchdesigner` MCP server (try `project_info`)
+
+If TouchDesigner is not running, say so and stop. Copying skill folders by hand works but leaves no manifest, so the component can neither update nor uninstall them afterwards — it only manages what it recorded installing.
 
 ## Process
 
-### 1. Read the global manifest
+### 1. Find the component
 
-Read `~/.claude/skills/td-skills-manifest.json`. Extract the `repo_path` field.
+`project_info` gives the project. The component is normally `/TDMCP`; confirm with `list_operators` if it is not.
 
-If `repo_path` is missing or the path doesn't exist, tell the user:
-- "No skills repo registered. Run `python install.py install` from your local TDMCPSkills repo first."
+### 2. Set the target, then act
 
-### 2. Determine the action
+The Skills page drives everything. Set these with `set_parameters`, then pulse:
 
-Based on what the user asked:
+| Parameter | Value |
+| --- | --- |
+| `Installhost` | `claude` for this project's `.claude/skills/`, or `all` to cover `.claude/` and `.agents/` |
+| `Installscope` | `local` for project-local, `user` for global |
+| `Skillssource` | path to a TDMCPSkills checkout, or blank to fetch the published release |
 
-- **Install / update**: run `python <repo_path>/install.py install --project .`
-- **Uninstall / remove**: run `python <repo_path>/install.py uninstall --project .`
-- **Status / check**: run `python <repo_path>/install.py status --project .`
+Then:
+
+- **Install / update**: pulse `Installagentskills`
+- **Uninstall / remove**: pulse `Uninstallagentskills`
+- **Status / check**: read `Agentskillsstatus`
+
+Pulses are handled on the next cook, so read the status back in a **separate** call — reading it in the same call returns the previous value.
 
 ### 3. Confirm before acting
 
-Tell the user what you're about to do and which repo path you're using. Then execute.
+Say which host, which scope and which source you are about to use, and that `local` writes into the current project. Then execute.
 
 ### 4. Report results
 
-Show the output from install.py. If installing, note that project-level skills now override global ones.
+Read `Agentskillsstatus` and relay it. It reports per host and scope, names skills the manifest lists but that are missing from disk, and flags an install that is behind its source. The resolved directories are in that parameter's tooltip (`par.help`) when you need exact paths.
 
 ## Notes
 
 - Project skills override global skills of the same name — this is built into Claude Code
-- To customize a specific skill for a project, install locally then edit the project's `.claude/skills/td-<name>/SKILL.md`
+- To customize one skill for a project, install locally then edit `.claude/skills/td-<name>/SKILL.md`
 - To revert to global skills, uninstall the local copy
+- Codex and Antigravity share `<project>/.agents/skills/`, so one project install with `Installhost=all` serves both
+- The installer prunes only skills its own manifest recorded; a `td-*` folder it did not install is left alone
