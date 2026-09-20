@@ -40,17 +40,17 @@ keys.
 **This repo is skills content. Installation lives in the TDMCP component.** There is no
 installer script here.
 
-On the component's **Skills** page:
+On the component's **MCP** page pick the agent and scope, then pulse **Install Skills**:
 
-| Parameter | Meaning |
-| --- | --- |
-| `Install For` | `Everything` (`.claude/` + `.agents/`), `Claude Code only`, `Everything except Claude`, or a single host |
-| `Install Scope` | `local` writes into the current project, `user` writes into your home directory |
-| `Skills Source` | a checkout of this repo, or **blank to download the published release** |
-| `Skills Version` | a release tag to pin, or blank for the latest |
+| Parameter | Page | Meaning |
+| --- | --- | --- |
+| `Install For` | MCP | which agent — one at a time: Claude Code, Codex, Antigravity, Cursor, OpenCode |
+| `Install Scope` | MCP | rebuilt per agent to the scopes it supports; `user` writes to your home directory, `project` into the current project |
+| `Skills Source` | Skills | a checkout of this repo, or **blank to download the published release** |
+| `Skills Version` | Skills | a release tag to pin, or blank for the latest |
 
-Then pulse **Install Agent Skills**. `Agent Skills Status` reports what landed where, and its
-tooltip lists the resolved directories.
+`Skills Status` reports what landed where, and its tooltip lists the resolved directories.
+The Skills page's `Installed Locations` shows every destination currently holding skills.
 
 Claude Code users can also install from the plugin marketplace (below), which registers the
 MCP connection at the same time.
@@ -131,9 +131,8 @@ Notes:
 - The installer removes only skills its own manifest recorded. A `td-*` directory it did not
   install — another tool's, or hand-made — is left alone.
 - **One project install can serve two hosts.** Codex and Antigravity both read
-  `<project>/.agents/skills/`, so a single project-scope install covers both, and
-  `Install For: Everything` writes two directories rather than three. Their global paths
-  differ, so `user`-scope installs stay separate.
+  `<project>/.agents/skills/`, so installing for either at project scope covers both. Their
+  global paths differ, so `user`-scope installs stay separate.
 - Pick **one scope per host**. Installing the same skills both globally and project-locally
   works — project wins — but it is two things to keep updated.
 - With `Skills Source` blank the component downloads the latest **release**, not `main`.
@@ -162,7 +161,7 @@ git checkout -b my-custom-skills
 Edit any skill under `skills/`, run `python validate.py`, then pick a testing loop:
 
 **Via the component** — point `Skills Source` at your working tree and pulse
-**Install Agent Skills**. Re-pulse after each edit.
+**Install Skills**. Re-pulse after each edit.
 
 **Via the plugin (Claude Code)** — install this working tree as a local marketplace (fastest iteration; no push needed):
 

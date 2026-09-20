@@ -24,18 +24,18 @@ If TouchDesigner is not running, say so and stop. Copying skill folders by hand 
 
 ### 2. Set the target, then act
 
-The Skills page drives everything. Set these with `set_parameters`, then pulse:
+`Installfor` and `Installscope` live on the **MCP** page, `Skillssource` on the **Skills** page. Set them with `set_parameters`, then pulse:
 
 | Parameter | Value |
 | --- | --- |
-| `Installhost` | `claude` for this project's `.claude/skills/`, or `all` to cover `.claude/` and `.agents/` |
-| `Installscope` | `local` for project-local, `user` for global |
+| `Installfor` | the agent, one at a time: `claude`, `codex`, `agy`, `cursor`, `opencode` |
+| `Installscope` | `project` for project-local, `user` for global. The menu is rebuilt per agent, so only supported scopes appear |
 | `Skillssource` | path to a TDMCPSkills checkout, or blank to fetch the published release |
 
 Then:
 
 - **Install / update**: pulse `Installagentskills`
-- **Uninstall / remove**: pulse `Uninstallagentskills`
+- **Uninstall / remove**: pulse `Uninstallagentskills`. `Skillsscope` decides how wide: `current` follows the MCP page, `project` / `user` sweep every agent at that scope, `everywhere` clears all of them
 - **Status / check**: read `Agentskillsstatus`
 
 Pulses are handled on the next cook, so read the status back in a **separate** call — reading it in the same call returns the previous value.
@@ -53,5 +53,6 @@ Read `Agentskillsstatus` and relay it. It reports per host and scope, names skil
 - Project skills override global skills of the same name — this is built into Claude Code
 - To customize one skill for a project, install locally then edit `.claude/skills/td-<name>/SKILL.md`
 - To revert to global skills, uninstall the local copy
-- Codex and Antigravity share `<project>/.agents/skills/`, so one project install with `Installhost=all` serves both
+- Codex and Antigravity share `<project>/.agents/skills/`, so installing for either at project scope serves both
 - The installer prunes only skills its own manifest recorded; a `td-*` folder it did not install is left alone
+- `Skillsoverview` on the Skills page lists every destination currently holding skills — read it before any wide uninstall
