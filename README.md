@@ -19,11 +19,12 @@ Three separate pieces work together:
 | Claude Code | `~/.claude/skills/` · `.claude/skills/` | `.mcp.json` / `~/.claude.json` (plugin auto-registers) |
 | Codex | `~/.codex/skills/` · `.agents/skills/` | `~/.codex/config.toml` |
 | Antigravity (`agy`) | `~/.gemini/antigravity-cli/skills/` · `.agents/skills/` | `~/.gemini/config/mcp_config.json` |
-| OpenCode | not located | `opencode.json` |
+| OpenCode v1 | not located | `opencode.json` / `~/.config/opencode/opencode.jsonc` |
+| OpenCode v2 (beta, `opencode2`) | `~/.config/opencode/skills/` · `.agents/skills/` | `opencode.json` / `~/.config/opencode/opencode.json(c)` |
 
 Each row is the global path followed by the project path. In practice there are two project
-roots: `.claude/skills/` for Claude Code and `.agents/skills/` for Codex and Antigravity, which
-share it — so one project install serves both. Note `~/.agents/skills/` (the home-directory
+roots: `.claude/skills/` for Claude Code and `.agents/skills/` for Codex, Antigravity and
+OpenCode v2, which share it — so one project install serves all three. Note `~/.agents/skills/` (the home-directory
 form) is read by nothing; only the project-relative `.agents/` is real.
 
 Gemini CLI was retired by Google on 2026-06-18 and replaced by Antigravity (`agy`), so it is
@@ -95,13 +96,17 @@ at `<project>/.agents/plugins/<name>/mcp_config.json` and registered with
 `agy mcp list` shows only the global file — plugin-provided servers appear in the interactive
 TUI's MCP Servers panel instead, with their tools namespaced `<plugin>_<server>`.
 
-**OpenCode** — project `opencode.json` (or `~/.config/opencode/opencode.json`):
+**OpenCode** — v1 uses a flat `"mcp": { "tdmcp": {…} }`; the v2 beta nests it under `servers`, as below. Project `opencode.json` (or `~/.config/opencode/opencode.json(c)`).
+In v2, `codemode: false` gives the model the tools directly instead of through OpenCode's JavaScript
+`execute` layer, which small local models misuse:
 
 ```json
 {
   "$schema": "https://opencode.ai/config.json",
   "mcp": {
-    "tdmcp": { "type": "remote", "url": "http://127.0.0.1:13316/mcp", "enabled": true }
+    "servers": {
+      "tdmcp": { "type": "remote", "url": "http://127.0.0.1:13316/mcp", "codemode": false }
+    }
   }
 }
 ```
