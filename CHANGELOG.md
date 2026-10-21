@@ -6,6 +6,19 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); this
 project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html). Released
 versions are tracked in `VERSION` and the Claude plugin manifests.
 
+## [1.4.1] - 2026-10-20
+
+### Added
+- **Claude Desktop plugin.** Each release now carries `TDMCP-Skills-<version>.zip`,
+  the skills packaged as a Claude plugin. In Claude Desktop, open **Settings >
+  Plugins > Add > Upload a plugin** and drop the file in; the 19 skills install
+  as one plugin, **TDMCP Skills**, and uploading a newer release replaces it.
+  `python build_plugin.py` writes the archive to `dist/`. The plugin manifest
+  gains `displayName`, which is what Desktop shows; `name` stays `tdmcp-skills`
+  so updates match the installed plugin.
+
+Skills are unchanged from 1.4.0.
+
 ## [1.4.0] - 2026-09-19
 
 This is the release where TDMCPSkills becomes skills content and nothing else.

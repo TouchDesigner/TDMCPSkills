@@ -4,3 +4,5 @@ __pycache__/
 # canonical skills source must stay adapter-free; tool-created analytics logs
 skills/.claude/
 **/.claude/analytics/
+# build_plugin.py output
+dist/

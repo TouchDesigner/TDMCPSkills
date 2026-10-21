@@ -1,7 +1,8 @@
 {
   "name": "tdmcp-skills",
-  "description": "TouchDesigner skills \u2014 workflow, builders, and pitfalls for TOPs, CHOPs, POPs, SOPs, GLSL, materials, components, and UI.",
-  "version": "1.4.0",
+  "displayName": "TDMCP Skills",
+  "version": "1.4.1",
+  "description": "TouchDesigner skills — workflow, builders, and pitfalls for TOPs, CHOPs, POPs, SOPs, GLSL, materials, components, and UI.",
   "author": {
     "name": "Derivative",
     "email": "jarrett@derivative.ca",
