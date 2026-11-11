@@ -8,6 +8,18 @@ versions are tracked in `VERSION` and the Claude plugin manifests.
 
 ## [Unreleased]
 
+## [1.4.2] - 2026-11-11
+
+### Changed
+- **Claude Desktop install.** The README now points Desktop users at
+  `Derivative-TDMCP.plugin` from the TDMCP release, which has carried these skills
+  and the bridge as one plugin since TDMCP 1.1.57, and says to remove the separate
+  **TDMCP Skills** plugin so skills are not listed twice. `TDMCP-Skills-<version>.zip`
+  stays attached to releases as the input the TDMCP build reads.
+- **Contents lines** head the three reference files longer than 100 lines
+  (`td-pop-family`, `td-glsl-shaders`, `td-lister-ui`), so an agent reading part of
+  one can see what else it holds.
+
 ### Fixed
 - **Line endings in the plugin zip.** The 1.4.1 zip was built from a Windows
   checkout and carried every skill with CRLF line endings, although the repository

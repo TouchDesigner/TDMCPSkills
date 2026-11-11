@@ -1,10 +1,10 @@
-"""Pack the skills as a Claude Desktop plugin: dist/TDMCP-Skills-<version>.zip
+"""Pack the skills as a Claude plugin archive: dist/TDMCP-Skills-<version>.zip
 
-Standard library only. Claude Desktop installs it from Settings > Plugins >
-Add > Upload a plugin; uploading a newer version replaces the installed one.
-The archive is the plugin manifest plus skills/, README and licence. It
-carries no .mcp.json: in Desktop the TouchDesigner connection comes from the
-TDMCP.mcpb extension, not from the plugin.
+Standard library only. The archive is the plugin manifest plus skills/, README
+and licence, with no .mcp.json. Its consumer is the TDMCP build
+(scripts/build_mcpb.py in TDMCP), which takes the skills/ tree from the zip
+attached to the release it pins and packs it into Derivative-TDMCP.plugin, the
+one plugin Claude Desktop users install. Text is packed with LF line endings.
 
     python build_plugin.py
 """

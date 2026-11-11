@@ -1,5 +1,7 @@
 # POP Reference — Operators & Attributes
 
+**Contents:** Reserved Attributes · Common Attributes · particlePOP Attributes · Attribute Component Access · particlePOP Capacity · Read-Only Built-Ins · Attribute Naming · Python POP Data Access · Generators · Converters · Math · Attributes · Spatial · Simulation / Time · Topology · Flow Control · GLSL · POP → TOP · Sequence Parameters · mathcombinePOP Operations · mathmixPOP Floor Bounce Pattern · feedbackPOP Lifecycle
+
 ## Reserved Attributes
 
 - `P` float3 — position

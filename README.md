@@ -124,14 +124,20 @@ This installs the 19 distributed skills and auto-registers the TDMCP MCP connect
 
 ## Install — Claude Desktop
 
-Claude Desktop does not read skills from disk. Download `TDMCP-Skills-<version>.zip`
-from [Releases](https://github.com/TouchDesigner/TDMCPSkills/releases), open
-**Settings → Plugins → Add → Upload a plugin**, drop the file in and click **Upload**.
-The skills appear as one plugin, **TDMCP Skills**. To update, upload the newer
-release; to remove, use the plugin's menu under **Plugins → Yours**.
+Claude Desktop does not read skills from disk; it gets them inside a plugin. Since
+TDMCP 1.1.57 that plugin is `Derivative-TDMCP.plugin` from the
+[TDMCP release](https://github.com/TouchDesigner/TDMCP/releases), which carries these
+skills together with the bridge that connects Desktop to TouchDesigner. Upload it under
+**Customize → Plugins → Add → Upload plugin**; there is nothing to install from this
+repository.
 
-The plugin carries the skills only. The connection to TouchDesigner comes from
-the `TDMCP.mcpb` extension in the [TDMCP release](https://github.com/TouchDesigner/TDMCP/releases).
+If you uploaded the separate **TDMCP Skills** plugin from an earlier release, remove it
+(**Customize → Plugins**, the plugin's menu), or every skill is listed twice. The same
+applies to a Claude Code install on the same account: account plugins sync to Claude
+Code, so keep either the plugin or the component's **Install Skills** copy, not both.
+
+`TDMCP-Skills-<version>.zip` is still attached to each release here. The TDMCP build
+reads the skills from it; it is not something to install by hand.
 
 ## Where skills land
 
