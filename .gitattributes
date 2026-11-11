@@ -1,0 +1,8 @@
+# Store and check out text with LF on every OS. Without this, a Windows
+# checkout with core.autocrlf=true turns files into CRLF, and build_plugin.py
+# packed those CRLF copies into the release zip (1.4.1).
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.zip binary

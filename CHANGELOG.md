@@ -6,6 +6,14 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); this
 project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html). Released
 versions are tracked in `VERSION` and the Claude plugin manifests.
 
+## [Unreleased]
+
+### Fixed
+- **Line endings in the plugin zip.** The 1.4.1 zip was built from a Windows
+  checkout and carried every skill with CRLF line endings, although the repository
+  stores LF. `build_plugin.py` now packs text files with LF whatever the checkout
+  holds, and a `.gitattributes` keeps checkouts LF on every OS.
+
 ## [1.4.1] - 2026-10-20
 
 ### Added

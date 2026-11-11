@@ -14,6 +14,20 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 OUT_DIR = ROOT / 'dist'
+# Packed with LF line endings whatever the checkout has: a Windows clone made
+# before .gitattributes existed still holds CRLF working copies.
+TEXT_SUFFIXES = {'.md', '.json', '.txt', '.py', '.glsl', '.html', '.yaml', '.yml'}
+
+
+def packed_bytes(path):
+    """The file's bytes as they go into the archive: text with LF endings."""
+    data = path.read_bytes()
+    if path.suffix.lower() in TEXT_SUFFIXES:
+        data = data.replace(b'\r\n', b'\n')
+        if b'\r' in data:
+            raise SystemExit('[plugin BLOCKED] {} contains a bare CR; save it with LF '
+                             'line endings'.format(path.relative_to(ROOT).as_posix()))
+    return data
 
 
 def main():
@@ -30,7 +44,7 @@ def main():
     out = OUT_DIR / 'TDMCP-Skills-{}.zip'.format(version)
     with zipfile.ZipFile(out, 'w', zipfile.ZIP_DEFLATED) as z:
         for f in files:
-            z.write(f, f.relative_to(ROOT).as_posix())
+            z.writestr(f.relative_to(ROOT).as_posix(), packed_bytes(f))
     skills = sorted({f.relative_to(ROOT).parts[1] for f in files if f.relative_to(ROOT).parts[0] == 'skills'})
     print('[plugin] wrote {} ({} bytes): {} skills, version {}'.format(out, out.stat().st_size, len(skills), version))
 
