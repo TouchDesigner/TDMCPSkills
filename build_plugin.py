@@ -1,9 +1,9 @@
-"""Pack the skills as a Claude plugin archive: dist/TDMCP-Skills-<version>.zip
+"""Pack the skills as a Claude plugin archive: dist/tdmcp_skills_<version>.zip
 
 Standard library only. The archive is the plugin manifest plus skills/, README
 and licence, with no .mcp.json. Its consumer is the TDMCP build
 (scripts/build_mcpb.py in TDMCP), which takes the skills/ tree from the zip
-attached to the release it pins and packs it into Derivative-TDMCP.plugin, the
+attached to the release it pins and packs it into derivative_tdmcp.plugin, the
 one plugin Claude Desktop users install. Text is packed with LF line endings.
 
     python build_plugin.py
@@ -41,7 +41,7 @@ def main():
                     and not any(part.startswith('.') or part == '__pycache__'
                                 for part in p.relative_to(ROOT).parts))
     OUT_DIR.mkdir(exist_ok=True)
-    out = OUT_DIR / 'TDMCP-Skills-{}.zip'.format(version)
+    out = OUT_DIR / 'tdmcp_skills_{}.zip'.format(version)
     with zipfile.ZipFile(out, 'w', zipfile.ZIP_DEFLATED) as z:
         for f in files:
             z.writestr(f.relative_to(ROOT).as_posix(), packed_bytes(f))
