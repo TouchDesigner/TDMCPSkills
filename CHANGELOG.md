@@ -8,9 +8,12 @@ versions are tracked in `VERSION` and the Claude plugin manifests.
 
 ## [Unreleased]
 
+## [1.4.3] - 2026-11-15
+
 ### Changed
 - **The release archive is `tdmcp_skills_<version>.zip`**, lower case with
   underscores, matching TDMCP's `tdmcp.tox` and `derivative_tdmcp.plugin`.
+  The skills themselves are unchanged from 1.4.2.
   Releases up to 1.4.2 keep `TDMCP-Skills-<version>.zip`. The TDMCP plugin build
   downloads the archive by name, so its pin and the name change together.
 
